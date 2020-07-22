@@ -3,14 +3,19 @@ dev.off()
 pacman::p_load(pacman, rio) 
 library(tibble)
 # IMPORTING Data ###########################################################
-data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
-activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
-AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
-FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
+# data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/KLU_APC2_Master_2020_07_01.xlsx")
+# activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/activ_values.txt")
+# AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/AI.txt")
+# FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/FWHM.txt")
+# FWHM <- abs(FWHM)
+
+data <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
+activation <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
+AI <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
+FWHM <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
 FWHM <- abs(FWHM)
 # Filter Data ##############################################################
-data <- data[-c(which(data$FaceNames_Exclude == 'Yes')),]
-data <- data[data$Visit_Relative == 1,] #Issues with face name data and only 1 scan/subject - 87 observations
+data <- data[is.na(data$FaceNames_Exclude) & data$Visit_Relative == 1,] #Issues with face name data and only 1 scan/subject - 87 observations
 list <- match(activation$Scan_ID,data$Vault_Scan_ID)
 index <- which(list!=0,arr.ind = T)
 list <- na.omit(match(activation$Scan_ID, data$Vault_Scan_ID))
@@ -152,6 +157,19 @@ summary(mdl_Abs_hippocampus_AI)
 mdl_Abs_DLPFC_AI <- lm(Abs_DLPFC_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
 summary(mdl_Abs_DLPFC_AI)
 
+# Association with FWHM ####################################################################
+#left hippocampus fwhm (p = 0.06307)
+mdl_left_hippocampus_FWHM <- lm(Left_Hippocampus_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_left_hippocampus_FWHM )
+
+mdl_right_hippocampus_FWHM <- lm(Right_Hippocampus_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_right_hippocampus_FWHM )
+
+mdl_left_dlpfc_FWHM <- lm(Left_DLPFC_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_left_dlpfc_FWHM )
+
+mdl_right_dlpfc_FWHM <- lm(Right_DLPFC_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_right_dlpfc_FWHM )
 # Cognitive Factors with All Variables - Absolute AI################################################################
 #Language (0.06), executive1 (0.0299), executive_attention (0.02)
 mdl_memory_learning_abs_AI <- lm(memory_learning ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
@@ -168,9 +186,23 @@ summary(mdl_language_abs_AI)
 
 mdl_executive_attention_abs_AI <- lm(executive_attention ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
 summary(mdl_executive_attention_abs_AI)
+# Cognitive Factors with All Variables - FWHM ################################################################
+#executive_attention (0.001183)
+mdl_memory_learning_FWHM <- lm(memory_learning ~ FaceName_PostScanAccuracy+ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_memory_learning_FWHM)
 
+mdl_memory_retrieval_FWHM <- lm(memory_retrieval ~ FaceName_PostScanAccuracy+Left_Hippocampus_FWHM + Right_Hippocampus_FWHM + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_memory_retrieval_FWHM)
+
+mdl_visiospatial_FWHM <- lm(visiospatial ~ FaceName_PostScanAccuracy+Left_Hippocampus_FWHM + Right_Hippocampus_FWHM + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_visiospatial_FWHM)
+
+mdl_language_FWHM <- lm(language ~ FaceName_PostScanAccuracy+Left_Hippocampus_FWHM + Right_Hippocampus_FWHM + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_language_abs_AI)
+
+mdl_executive_attention_FWHM <- lm(executive_attention ~ FaceName_PostScanAccuracy+Left_Hippocampus_FWHM + Right_Hippocampus_FWHM + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_executive_attention_FWHM)
 ###############################################################################
-
 save.image(file = "~/Desktop/RStudio Scripts/KLU_APC2_Data_Analysis_7_22_2020") #path for spreadsheet - saves all variables
 
 
