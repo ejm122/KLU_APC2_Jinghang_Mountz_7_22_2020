@@ -4,10 +4,10 @@ dev.off()
 pacman::p_load(pacman, rio) 
 library(tibble)
 # IMPORTING Data ###########################################################
-data <- import("GitHub/Mean_Activation_AI/Appending_to_Master/KLU_APC2_Master_2020_07_22.xlsx")
-activation <- import("GitHub/Mean_Activation_AI/Appending_to_Master/activ_values.txt")
-AI <- import("GitHub/Mean_Activation_AI/Appending_to_Master/AI.txt")
-FWHM <- import("GitHub/Mean_Activation_AI/Appending_to_Master/activ_deactiv_radius.txt")
+data <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
+activation <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
+AI <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
+FWHM <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
 FWHM <- abs(FWHM)
 # Filter Data ##############################################################
 data <- data[is.na(data$FaceNames_Exclude) & data$Visit_Relative == 1,] #Issues with face name data and only 1 scan/subject - 87 observations
@@ -39,10 +39,10 @@ data$Right_DLPFC_Activation[list] <- activation[,6][index]
 data$Hippocampus_AI[list] <- AI[,3][index]
 data$DLPFC_AI[list] <- AI[,4][index]
 
-data$Left_Hippocampus_FWHM[list] <- FWHM[,3]
-data$Right_Hippocampus_FWHM[list] <- FWHM[,4]
-data$Left_DLPFC_FWHM[list] <- FWHM[,5]
-data$Right_DLPFC_FWHM[list] <- FWHM[,6]
+data$Left_Hippocampus_FWHM[list] <- FWHM[,3][index]
+data$Right_Hippocampus_FWHM[list] <- FWHM[,4][index]
+data$Left_DLPFC_FWHM[list] <- FWHM[,5][index]
+data$Right_DLPFC_FWHM[list] <- FWHM[,6][index]
 # Recode Variables ##############################################################
 data$Race_cat <- data$Race != 'White' #not white = 1 (True)
 data$Education_cat <- data$Education > 12  #higher education = 1 (True)
@@ -73,13 +73,13 @@ plot(data$Left_Hippocampus_Activation, data$Left_Hippocampus_FWHM,col="red", pch
 points(data$Right_Hippocampus_Activation, data$Right_Hippocampus_FWHM, pch = 2, col="black")
 points(x_l_h,y_l_h,pch = 4, cex = 2)
 points(x_r_h,y_r_h,pch = 4, cex = 2)
-legend(x=-2,y=20,c("Left Hippocampus", "Right Hippocampus", "PiB(+) Subjects"),cex=.8,col=c("red","black","black"),pch=c(1,2,4))
+legend(x=-2.5,y=27,c("Left Hippocampus", "Right Hippocampus", "PiB(+) Subjects"),cex=.8,col=c("red","black","black"),pch=c(1,2,4))
 
 plot(data$Left_DLPFC_Activation, data$Left_DLPFC_FWHM,col="blue", pch = 1, xlab="Mean Activation", ylab="FWHM")
 points(data$Right_DLPFC_Activation, data$Right_DLPFC_FWHM, col = "brown", pch =2)
 points(x_l_d,y_l_d,pch = 4, cex = 2)
 points(x_r_d,y_r_d,pch = 4, cex = 2)
-legend(x=-4,y=20,c("Left DLPFC", "Right DLPFC","PiB(+) Subjects"),cex=.8,col=c("blue","brown","black"),pch=c(1,2,4))
+legend(x=-4,y=35,c("Left DLPFC", "Right DLPFC","PiB(+) Subjects"),cex=.8,col=c("blue","brown","black"),pch=c(1,2,4))
 
 # Cognitive Data Normalization ##################################################
 #Memory
