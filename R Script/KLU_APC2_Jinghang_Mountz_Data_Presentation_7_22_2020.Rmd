@@ -516,24 +516,22 @@ tab_model(mdl_executive_attention_abs_AI, dv.labels = "Executive_Attention",
 
 # FWHM Regressions
 
-**New Model**
+**Left Hippocampus FWHM**
 
-<!-- <div style="margin-bottom:100px;"> -->
-<!-- ``` {r new_model_data, echo = FALSE} -->
-<!-- new_model_data <- data.frame(Variable = c(paste("F( ", new_model_df1, ",", new_model_df2,")"),"R^2","p-value"), -->
-<!--                                Value = c(new_model_fstat,new_model_rsquared, new_model_pval)) -->
+<div style="margin-bottom:100px;">
+``` {r left_hippocampus_fwhm_data, echo = FALSE}
+left_hippocampus_fwhm_data <- data.frame(Variable = c(paste("F( ", left_hippocampus_df1, ",", left_hippocampus_df2,")"),"R^2","p-value"),
+                               Value = c(left_hippocampus_fstat,left_hippocampus_rsquared, left_hippocampus_pval))
 
-<!-- kable(new_model_data, caption = "New Model Name Summary", digits = 3) %>% -->
-<!--   kable_styling(bootstrap_options = "striped", full_width = F, position = "left") -->
-<!-- ``` -->
+kable(left_hippocampus_fwhm_data, caption = "New Model Name Summary", digits = 3) %>%
+kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
 
-<!-- ``` {r executive_attention_abs_coefficients, echo = FALSE} -->
-<!-- tab_model(new_model, dv.labels = "New Model Title", -->
-<!--           pred.labels = c("Intercept","Task Accuracy","DLPFC Absolute AI", "Hippocampus Absolute AI", "Age at Visit", "Sex", "Race", -->
-<!--                           "Education (years)", "FDG Global",  -->
-<!--                           "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE) -->
-<!-- ``` -->
-<!-- </div> -->
+``` {r left_hippocampus_fwhm_coefficients, echo = FALSE}
+tab_model(mdl_left_hippocampus_fwhm, dv.labels = "New Model Title",
+          pred.labels = c("Intercept","Age","Sex", "Race", "Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
 
 
 
