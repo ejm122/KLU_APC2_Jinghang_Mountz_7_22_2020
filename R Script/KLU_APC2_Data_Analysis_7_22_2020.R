@@ -1,13 +1,12 @@
-## @knitr CollectData
 rm(list=ls())
 dev.off()
 pacman::p_load(pacman, rio) 
 library(tibble)
 # IMPORTING Data ###########################################################
-data <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
-activation <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
-AI <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
-FWHM <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
+data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
+activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
+AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
+FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
 FWHM <- abs(FWHM)
 # Filter Data ##############################################################
 data <- data[is.na(data$FaceNames_Exclude) & data$Visit_Relative == 1,] #Issues with face name data and only 1 scan/subject - 87 observations
@@ -49,6 +48,7 @@ data$Education_cat <- data$Education > 12  #higher education = 1 (True)
 data$Sex_cat <- (data$Sex == 'Male') #1 = male
 data$Sex_cat[data$Sex == "NaN"] = NA
 data$LETTER_FLUENCY <- (data$FLUENA + data$FLUENF+ data$FLUENS) / 3
+data$WREC_TOT <- (data$WREC + data$WREC2 + data$WREC3)
 data$STRINTERFERENCE <- (data$STRCW - data$STRCOL) / data$STRCOL
 data$PiB_STATUS_CODE <- (data$PiBStatus_SUVR_GTM_FS_Global == "pos")
 data$PiB_STATUS_CODE[data$PiBStatus_SUVR_GTM_FS_Global == "NaN"] = NA
@@ -81,55 +81,38 @@ points(x_l_d,y_l_d,pch = 4, cex = 2)
 points(x_r_d,y_r_d,pch = 4, cex = 2)
 legend(x=-4,y=35,c("Left DLPFC", "Right DLPFC","PiB(+) Subjects"),cex=.8,col=c("blue","brown","black"),pch=c(1,2,4))
 
-# Cognitive Data Normalization ##################################################
-#Memory
-REYIM_Mean <- 15.4 #doi: 10.1136/jnnp.2004.045567
-REYDE_Mean <- 14.7 #doi: 10.1136/jnnp.2004.045567
-#Visiospatial
-REYCO_Mean <-22.3 #doi: 10.1136/jnnp.2004.045567
-BLOCKDES_Mean <- 11.4 #doi: 10.1136/jnnp.2004.045567
-#Language
-BOSTON1_Mean <- 26.9 #doi: 10.1136/jnnp.2004.045567
-FLUEN_Mean <- 15.6 #doi: 10.1136/jnnp.2004.045567
-#Executive/Attention
-TRAILAS_Mean <- 45.6 #doi: 10.1136/jnnp.2004.045567
-TRAILBS_Mean <-107.5 #doi: 10.1136/jnnp.2004.045567
-SPANSF_Mean <- 6.4 #doi: 10.1136/jnnp.2004.045567
-SPANSB_Mean <- 4.4 #doi: 10.1136/jnnp.2004.045567
-DIGSYMWR_Mean <- 46.8 #doi: 10.1136/jnnp.2004.045567
-
-#Citation Notes: - add n values
-#Our sample: avg age: 74.8; >12 yrs education: 72%, avg. education: 14.897
-
-#doi: 10.1136/jnnp.2004.045567 - avg. age (for normal subjects): 79.5; >12 yrs education: 61.5%
-#Most means from this source are more low/poor compared to our sample
-
-# Z Transform ####################################################################
+# Cognitive Domain - Z Transform ####################################################################
 #Negative z value means that lower value = higher performance
 # doi:10.1016/j.jalz.2017.12.003 - method of composite calculation
 #doi/ 10.1136/jnnp.2004.045567 - standard deviations from normative data
-REYIM_Z <- (data$REYIM-REYIM_Mean) / 4.8
-REYDE_Z <- (data$REYDE-REYDE_Mean) / 4.8
-REYCO_Z <- (data$REYCO-REYCO_Mean) / 2.1
-BLOCKDES_Z <- (data$BLOCKDES-BLOCKDES_Mean) / 4.8
-BOSTON1_Z <-(data$BOSTON1-BOSTON1_Mean) / 2.6
-FLUEN_Z <- (data$FLUEN-FLUEN_Mean) / 4.8
-TRAILAS_Z <- (data$TRAILAS-TRAILAS_Mean) / 17.5
-TRAILAS_Z_INV <- -1*TRAILAS_Z
-SPANSF_Z <- (data$SPANSF-SPANSF_Mean) / 1.2
-SPANSB_Z <- (data$SPANSB-SPANSB_Mean) / 1.2
-TRAILBS_Z <- (data$TRAILBS-TRAILBS_Mean) / 49.3
-TRAILBS_Z_INV <- -1*TRAILBS_Z
-DIGSYMWR_Z <- (data$DIGSYMWR-DIGSYMWR_Mean) / 12.3
+CLOCKD_Z <- (data$CLOCKD - mean(data$CLOCKD, na.rm = TRUE)) / sd(data$CLOCKD, na.rm = TRUE)
+BLOCKDES_Z <- (data$BLOCKDES - mean(data$BLOCKDES, na.rm = TRUE)) / sd(data$BLOCKDES, na.rm = TRUE)
+BNT60TOT_Z <- (data$BNT60TOT - mean(data$BNT60TOT, na.rm = TRUE)) / sd(data$BLOCKDE, na.rm = TRUE)
+REYCO_Z <- (data$REYCO - mean(data$REYCO, na.rm = TRUE)) / sd (data$REYCO, na.rm = TRUE)
+REYIM_Z <- (data$REYIM-mean(data$REYIM, na.rm = TRUE)) / sd(data$REYIM, na.rm = TRUE)
+REYDE_Z <- (data$REYDE - mean(data$REYDE, na.rm = TRUE)) / sd(data$REYDE, na.rm = TRUE)
+FLUEN_Z <- (data$FLUEN - mean(data$FLUEN, na.rm = TRUE)) / sd(data$FLUEN, na.rm = TRUE)
+LETTER_FLUENCY_Z <- (data$LETTER_FLUENCY - mean(data$LETTER_FLUENCY, na.rm = TRUE)) / sd(data$LETTER_FLUENCY, na.rm=TRUE)
+WREC_TOT_Z <- (data$WREC_TOT - mean(data$WREC_TOT, na.rm = TRUE)) / sd(data$WREC_TOT, na.rm =TRUE)
+WRECDE_Z <- (data$WRECDE - mean(data$WRECDE, na.rm = TRUE)) / sd(data$WRECDE, na.rm = TRUE)
+SPANSF_Z <- (data$SPANSF - mean(data$SPANSF, na.rm = TRUE)) / sd(data$SPANSF, na.rm = TRUE)
+SPANSB_Z <- (data$SPANSB - mean(data$SPANSB, na.rm = TRUE)) / sd(data$SPANSB, na.rm = TRUE)
+TRAILAS_Z <- (data$TRAILAS - mean(data$TRAILAS, na.rm = TRUE)) / sd(data$TRAILAS, na.rm = TRUE)
+TRAILBS_Z <- (data$TRAILBS - mean(data$TRAILBS, na.rm = TRUE)) / sd(data$TRAILBS, na.rm= TRUE)
+LMIAIMM_Z <- (data$LMIAIMM - mean(data$LMIAIMM, na.rm = TRUE)) /sd(data$LMIAIMM, na.rm = TRUE)
+LMIIADEL_Z <- (data$LMIIADEL - mean(data$LMIIADEL, na.rm = TRUE))/sd(data$LMIIADEL, na.rm = TRUE)
+DIGSYMWR_Z <- (data$DIGSYMWR - mean(data$DIGSYMWR, na.rm = TRUE))/sd(data$DIGSYMWR, na.rm = TRUE)
+STRCW_Z <- (data$STRCW - mean(data$STRCW, na.rm = TRUE)) / sd(data$STRCW, na.rm = TRUE)
+TRAILAS_Z_INV <- -1 * TRAILAS_Z
+TRAILBS_Z_INV <- -1 * TRAILBS_Z
 
 # Domain Scores #########################################################################
 #doi:10.1016/j.jalz.2017.12.003., doi:10.1080/13607860903071014. (Both Beth Snitz articles), https://www.ncbi.nlm.nih.gov/books/NBK285344/ - for SPANSB in Executive
-data$memory <- (REYIM_Z + REYDE_Z) /2
-data$visiospatial <- (REYCO_Z + BLOCKDES_Z)/2
-data$language <- (BOSTON1_Z +FLUEN_Z) / 2
-data$executive <- (TRAILBS_Z_INV +SPANSB_Z) / 2
-data$attention <- (TRAILAS_Z_INV + SPANSF_Z) / 2
-data$executive_attention <- (TRAILAS_Z_INV + TRAILBS_Z_INV + SPANSF_Z + SPANSB_Z + DIGSYMWR_Z) / 5
+data$memory_learning <- (LMIAIMM_Z + REYIM_Z + WREC_TOT_Z) / 3
+data$memory_retrieval <- (LMIIADEL_Z + REYDE_Z + WRECDE_Z) / 3 
+data$visiospatial <- (BLOCKDES_Z + REYCO_Z) / 2
+data$language <- (FLUEN_Z + LETTER_FLUENCY_Z + BNT60TOT_Z) / 3
+data$executive_attention <- (TRAILAS_Z_INV + TRAILBS_Z_INV + CLOCKD_Z + DIGSYMWR_Z + STRCW_Z + SPANSF_Z + SPANSB_Z) / 7
 
 #Intraclass Correlation ################################################################
 # Pearson (Linear Correlation between composite and raw scores)
