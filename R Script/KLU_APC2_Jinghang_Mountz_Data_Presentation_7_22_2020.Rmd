@@ -299,7 +299,7 @@ right_dlpfc_pval <- lmp(mdl_right_dlpfc_fwhm)
 
 ``` {r memory_learning_fwhm, echo = FALSE}
 # Cognitive Factors  - FWHM ################################################################
-mdl_memory_learning_fwhm <- lm(memory_learning ~ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_memory_learning_fwhm <- lm(memory_learning ~ FaceName_PostScanAccuracy + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
 
 memory_learning_fwhm_rsquared <- summary(mdl_memory_learning_fwhm)$r.squared
 memory_learning_fwhm_fstat <- summary(mdl_memory_learning_fwhm)$fstatistic[1]
@@ -309,7 +309,7 @@ memory_learning_fwhm_pval <- lmp(mdl_memory_learning_fwhm)
 ```
 
 ``` {r memory_retrieval_fwhm, echo = FALSE}
-mdl_memory_retrieval_fwhm <- lm(memory_retrieval ~ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_memory_retrieval_fwhm <- lm(memory_retrieval ~ FaceName_PostScanAccuracy + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
 
 memory_retrieval_fwhm_rsquared <- summary(mdl_memory_retrieval_fwhm)$r.squared
 memory_retrieval_fwhm_fstat <- summary(mdl_memory_retrieval_fwhm)$fstatistic[1]
@@ -320,7 +320,7 @@ memory_retrieval_fwhm_pval <- lmp(mdl_memory_retrieval_fwhm)
 
 ``` {r visiospatial_fwhm, echo = FALSE}
 
-mdl_visiospatial_fwhm <- lm(visiospatial ~ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_visiospatial_fwhm <- lm(visiospatial ~ FaceName_PostScanAccuracy + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
 
 visiospatial_fwhm_rsquared <- summary(mdl_visiospatial_fwhm)$r.squared
 visiospatial_fwhm_fstat <- summary(mdl_visiospatial_fwhm)$fstatistic[1]
@@ -331,7 +331,7 @@ visiospatial_fwhm_pval <- lmp(mdl_visiospatial_fwhm)
 
 ``` {r language_fwhm, echo = FALSE}
 
-mdl_language_fwhm <- lm(language ~ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_language_fwhm <- lm(language ~FaceName_PostScanAccuracy + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
 
 language_fwhm_rsquared <- summary(mdl_language_fwhm)$r.squared
 language_fwhm_fstat <- summary(mdl_language_fwhm)$fstatistic[1]
@@ -342,7 +342,7 @@ language_fwhm_pval <- lmp(mdl_language_fwhm)
 
 ``` {r executive_attention_fwhm, echo = FALSE}
 
-mdl_executive_attention_fwhm <- lm(executive_attention ~ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_executive_attention_fwhm <- lm(executive_attention ~ FaceName_PostScanAccuracy+ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
 
 executive_attention_fwhm_rsquared <- summary(mdl_executive_attention_fwhm)$r.squared
 executive_attention_fwhm_fstat <- summary(mdl_executive_attention_fwhm)$fstatistic[1]
@@ -648,7 +648,7 @@ kable(memory_learning_fwhm_data, caption = "Memory Learning Summary", digits = 3
 
 ``` {r memory_learning_fwhm_coefficients, echo = FALSE}
 tab_model(mdl_memory_learning_fwhm, dv.labels = "Memory Learning",
-          pred.labels = c("Intercept","Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+          pred.labels = c("Intercept","FaceName_PostScanAccuracy", "Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
 ```
 </div>
 
@@ -664,7 +664,7 @@ kable(memory_retrieval_fwhm_data, caption = "Memory Retrieval Summary", digits =
 
 ``` {r memory_retrieval_fwhm_coefficients, echo = FALSE}
 tab_model(mdl_memory_retrieval_fwhm, dv.labels = "Memory Retrieval",
-          pred.labels = c("Intercept","Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+          pred.labels = c("Intercept","FaceName_PostScanAccuracy", "Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
 ```
 </div>
 
@@ -680,7 +680,7 @@ kable(visiospatial_fwhm_data, caption = "Visiospatial Summary", digits = 3) %>%
 
 ``` {r visiospatial_fwhm_coefficients, echo = FALSE}
 tab_model(mdl_visiospatial_fwhm, dv.labels = "Visiospatial",
-          pred.labels = c("Intercept","Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+          pred.labels = c("Intercept","FaceName_PostScanAccuracy", "Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
 ```
 </div>
 
@@ -696,7 +696,7 @@ kable(language_fwhm_data, caption = "Language Summary", digits = 3) %>%
 
 ``` {r language_fwhm_coefficients, echo = FALSE}
 tab_model(mdl_language_fwhm, dv.labels = "Language",
-          pred.labels = c("Intercept","Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+          pred.labels = c("Intercept","FaceName_PostScanAccuracy", "Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
 ```
 </div>
 
@@ -712,7 +712,7 @@ kable(executive_attention_fwhm_data, caption = "Executive_Attention Summary", di
 
 ``` {r executive_attention_fwhm_coefficients, echo = FALSE}
 tab_model(mdl_executive_attention_fwhm, dv.labels = "Executive_Attention",
-          pred.labels = c("Intercept","Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+          pred.labels = c("Intercept", "FaceName_PostScanAccuracy", "Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
 ```
 </div>
 
