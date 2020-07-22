@@ -15,10 +15,16 @@ dev.off()
 pacman::p_load(pacman, rio) 
 library(tibble)
 # IMPORTING Data ###########################################################
-data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
-activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
-AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
-FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
+# data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/KLU_APC2_Master_2020_07_01.xlsx")
+# activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/activ_values.txt")
+# AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/AI.txt")
+# FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/FWHM.txt")
+# FWHM <- abs(FWHM)
+
+data <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
+activation <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
+AI <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
+FWHM <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
 FWHM <- abs(FWHM)
 # Filter Data ##############################################################
 data <- data[-c(which(data$FaceNames_Exclude == 'Yes')),]
@@ -250,9 +256,45 @@ executive_attention_abs_df2 <- summary(mdl_executive_attention_abs_AI)$fstatisti
 executive_attention_abs_pval <- lmp(mdl_executive_attention_abs_AI)
 ```
 
-<!-- ``` { r new_model, echo = FALSE} -->
+``` {r fwhm_L_hippocampus, echo = FALSE}
+mdl_left_hippocampus_fwhm <- lm(Left_Hippocampus_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
 
-<!-- ``` -->
+left_hippocampus_rsquared <- summary(mdl_left_hippocampus_fwhm)$r.squared
+left_hippocampus_fstat <- summary(mdl_left_hippocampus_fwhm)$fstatistic[1]
+left_hippocampus_df1 <- summary(mdl_left_hippocampus_fwhm)$fstatistic[2]
+left_hippocampus_df2 <- summary(mdl_left_hippocampus_fwhm)$fstatistic[3]
+left_hippocampus_pval <- lmp(mdl_left_hippocampus_fwhm)
+```
+
+``` {r fwhm_R_hippocampus, echo = FALSE}
+mdl_right_hippocampus_fwhm <- lm(Right_Hippocampus_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+
+right_hippocampus_rsquared <- summary(mdl_right_hippocampus_fwhm)$r.squared
+right_hippocampus_fstat <- summary(mdl_right_hippocampus_fwhm)$fstatistic[1]
+right_hippocampus_df1 <- summary(mdl_right_hippocampus_fwhm)$fstatistic[2]
+right_hippocampus_df2 <- summary(mdl_right_hippocampus_fwhm)$fstatistic[3]
+right_hippocampus_pval <- lmp(mdl_right_hippocampus_fwhm)
+```
+
+``` {r fwhm_L_dlpfc, echo = FALSE}
+mdl_left_dlpfc_fwhm <- lm(Left_DLPFC_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+
+left_dlpfc_rsquared <- summary(mdl_left_dlpfc_fwhm)$r.squared
+left_dlpfc_fstat <- summary(mdl_left_dlpfc_fwhm)$fstatistic[1]
+left_dlpfc_df1 <- summary(mdl_left_dlpfc_fwhm)$fstatistic[2]
+left_dlpfc_df2 <- summary(mdl_left_dlpfc_fwhm)$fstatistic[3]
+left_dlpfc_pval <- lmp(mdl_left_dlpfc_fwhm)
+```
+
+``` {r fwhm_R_dlpfc, echo = FALSE}
+mdl_right_dlpfc_fwhm <- lm(Right_DLPFC_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+
+right_dlpfc_rsquared <- summary(mdl_right_dlpfc_fwhm)$r.squared
+right_dlpfc_fstat <- summary(mdl_right_dlpfc_fwhm)$fstatistic[1]
+right_dlpfc_df1 <- summary(mdl_right_dlpfc_fwhm)$fstatistic[2]
+right_dlpfc_df2 <- summary(mdl_right_dlpfc_fwhm)$fstatistic[3]
+right_dlpfc_pval <- lmp(mdl_right_dlpfc_fwhm)
+```
 
 ``` {r modelSetUp, echo = FALSE, include = FALSE}
 if (!require("sjPlot")) install.packages("sjPlot")
