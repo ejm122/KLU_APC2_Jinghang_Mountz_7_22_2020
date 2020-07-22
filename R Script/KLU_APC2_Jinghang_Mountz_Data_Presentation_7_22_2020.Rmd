@@ -517,18 +517,65 @@ tab_model(mdl_executive_attention_abs_AI, dv.labels = "Executive_Attention",
 # FWHM Regressions
 
 **Left Hippocampus FWHM**
-
 <div style="margin-bottom:100px;">
 ``` {r left_hippocampus_fwhm_data, echo = FALSE}
 left_hippocampus_fwhm_data <- data.frame(Variable = c(paste("F( ", left_hippocampus_df1, ",", left_hippocampus_df2,")"),"R^2","p-value"),
                                Value = c(left_hippocampus_fstat,left_hippocampus_rsquared, left_hippocampus_pval))
 
-kable(left_hippocampus_fwhm_data, caption = "New Model Name Summary", digits = 3) %>%
+kable(left_hippocampus_fwhm_data, caption = "Left Hippocampus FWHM Summary", digits = 3) %>%
 kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
 ```
 
 ``` {r left_hippocampus_fwhm_coefficients, echo = FALSE}
-tab_model(mdl_left_hippocampus_fwhm, dv.labels = "New Model Title",
+tab_model(mdl_left_hippocampus_fwhm, dv.labels = "Left Hippocampus FWHM",
+          pred.labels = c("Intercept","Age","Sex", "Race", "Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+**Right Hippocampus FWHM**
+<div style="margin-bottom:100px;">
+``` {r right_hippocampus_fwhm_data, echo = FALSE}
+right_hippocampus_fwhm_data <- data.frame(Variable = c(paste("F( ", right_hippocampus_df1, ",", right_hippocampus_df2,")"),"R^2","p-value"),
+                               Value = c(right_hippocampus_fstat,right_hippocampus_rsquared, right_hippocampus_pval))
+
+kable(right_hippocampus_fwhm_data, caption = "Right Hippocampus FWHM Summary", digits = 3) %>%
+kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r right_hippocampus_fwhm_coefficients, echo = FALSE}
+tab_model(mdl_right_hippocampus_fwhm, dv.labels = "Right Hippocampus FWHM",
+          pred.labels = c("Intercept","Age","Sex", "Race", "Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+**Left DLPFC FWHM**
+<div style="margin-bottom:100px;">
+``` {r left_dlpfc_fwhm_data, echo = FALSE}
+left_dlpfc_fwhm_data <- data.frame(Variable = c(paste("F( ", left_dlpfc_df1, ",", left_dlpfc_df2,")"),"R^2","p-value"),
+                               Value = c(left_dlpfc_fstat,left_dlpfc_rsquared, left_dlpfc_pval))
+
+kable(left_dlpfc_fwhm_data, caption = "Left DLPFC FWHM Summary", digits = 3) %>%
+kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r left_dlpfc_fwhm_coefficients, echo = FALSE}
+tab_model(mdl_left_dlpfc_fwhm, dv.labels = "Left DLPFC FWHM",
+          pred.labels = c("Intercept","Age","Sex", "Race", "Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+**Right DLPFC FWHM**
+<div style="margin-bottom:100px;">
+``` {r right_dlpfc_fwhm_data, echo = FALSE}
+right_dlpfc_fwhm_data <- data.frame(Variable = c(paste("F( ", right_dlpfc_df1, ",", right_dlpfc_df2,")"),"R^2","p-value"),
+                               Value = c(right_dlpfc_fstat,right_dlpfc_rsquared, right_dlpfc_pval))
+
+kable(right_dlpfc_fwhm_data, caption = "Right DLPFC FWHM Summary", digits = 3) %>%
+kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r right_dlpfc_fwhm_coefficients, echo = FALSE}
+tab_model(mdl_right_dlpfc_fwhm, dv.labels = "Right DLPFC FWHM",
           pred.labels = c("Intercept","Age","Sex", "Race", "Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
 ```
 </div>
