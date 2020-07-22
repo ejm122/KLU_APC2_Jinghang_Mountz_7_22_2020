@@ -9,7 +9,8 @@ AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_M
 FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
 FWHM <- abs(FWHM)
 # Filter Data ##############################################################
-data <- data[is.na(data$FaceNames_Exclude) & data$Visit_Relative == 1,] #Issues with face name data and only 1 scan/subject - 87 observations
+data <- data[-c(which(data$FaceNames_Exclude == 'Yes')),]
+data <- data[data$Visit_Relative == 1,] #Issues with face name data and only 1 scan/subject - 87 observations
 list <- match(activation$Scan_ID,data$Vault_Scan_ID)
 index <- which(list!=0,arr.ind = T)
 list <- na.omit(match(activation$Scan_ID, data$Vault_Scan_ID))
@@ -117,25 +118,24 @@ data$executive_attention <- (TRAILAS_Z_INV + TRAILBS_Z_INV + CLOCKD_Z + DIGSYMWR
 #Intraclass Correlation ################################################################
 # Pearson (Linear Correlation between composite and raw scores)
 library("irr")
-#Memory
-REYIM_Pearson_Correlation <- cor(data$memory, data$REYIM, use = "complete.obs")
-REYDE_Pearson_Correlation <- cor(data$memory, data$REYDE, use = "complete.obs")
+#Memory_Learning
+REYIM_Pearson_Correlation <- cor(data$memory_learning, data$REYIM, use = "complete.obs")
+LMIAIMM_Pearson_Correlation <- cor(data$memory_learning, data$LMIAIMM, use = "complete.obs")
+WREC_TOT_Pearson_Correlation <- cor(data$memory_learning, data$WREC_TOT, use = "complete.obs")
+
+#Memory_Retrieval
+LMIIADEL_Pearson_Correlation <- cor(data$memory_learning, data$LMIIADEL, use = "complete.obs")
+REYDE_Pearson_Correlation <- cor(data$memory_learning, data$REYDE, use = "complete.obs")
+WRECDE_Pearson_Correlation <- cor(data$memory_learning, data$WRECDE, use = "complete.obs")
 
 # Visiospatial
 BLOCKDES_Pearson_Correlation <- cor(data$visiospatial, data$BLOCKDES, use = "complete.obs")
 REYCO_Pearson_Correlation <- cor(data$visiospatial, data$REYCO, use = "complete.obs")
 
 #Langugae
-BOSTON1_Pearson_Correlation <- cor(data$language, data$BOSTON1, use = "complete.obs")
+BNT60TOT_Pearson_Correlation <- cor(data$language, data$BNT60TOT, use = "complete.obs")
 FLUEN_Pearson_Correlation <- cor(data$language, data$FLUEN, use = "complete.obs")
-
-#Executive
-TRAILBS_Pearson_Correlation <- cor(data$executive, -1*data$TRAILBS, use = "complete.obs")
-SPANSB_Pearson_Correlation <- cor(data$executive, data$SPANSB, use = "complete.obs")
-
-#Attention
-TRAILAS_Pearson_Correlation <- cor(data$attention, -1*data$TRAILAS, use = "complete.obs")
-SPANSF_Pearson_Correlation <- cor(data$attention, data$SPANSF, use = "complete.obs")
+LETTER_FLUENCY_Pearson_Correlation <- cor(data$language, data$LETTER_FLUENCY, use = "complete.obs")
 
 #Executive_Attention
 TRAILBS_Combo_Pearson_Correlation <- cor(data$executive_attention, -1*data$TRAILBS, use = "complete.obs")
@@ -143,39 +143,7 @@ TRAILAS_Combo_Pearson_Correlation <- cor(data$executive_attention, -1*data$TRAIL
 SPANSF_Combo_Pearson_Correlation <- cor(data$executive_attention, data$SPANSF, use = "complete.obs")
 DIGSYMWR_Combo_Pearson_Correlation <- cor(data$executive_attention, data$DIGSYMWR, use = "complete.obs")
 SPANSB_Combo_Pearson_Correlation <- cor(data$executive_attention, data$SPANSB, use = "complete.obs")
-
-#Interclass Correlation (correlation between z-scores within composite score) ########3
-#https://www.datanovia.com/en/lessons/intraclass-correlation-coefficient-in-r/
-memory_icc_scores <-  cbind(REYIM_Z, REYDE_Z)
-memory_icc_values <- icc(memory_icc_scores, model = "twoway", type = "agreement", unit = "single")
-memory_icc <- memory_icc_values$value
-
-visiospatial_icc_scores <- cbind(REYCO_Z,BLOCKDES_Z)
-visiospatial_icc_values <- icc(visiospatial_icc_scores, model = "twoway", type = "agreement", unit = "single")
-visiospatial_icc <- visiospatial_icc_values$value
-
-language_icc_scores <- cbind(BOSTON1_Z,FLUEN_Z)
-language_icc_values <- icc(language_icc_scores, model = "twoway", type = "consistency", unit = "single")
-language_icc <- language_icc_values$value
-
-executive_icc_scores <- cbind(TRAILBS_Z_INV,SPANSB_Z)
-executive_icc_values <- icc(executive_icc_scores, model = "twoway", type = "consistency", unit = "single")
-executive_icc <- executive_icc_values$value
-
-attention_icc_scores <- cbind(TRAILAS_Z_INV,SPANSF_Z)
-attention_icc_values <- icc(attention_icc_scores, model = "twoway", type = "consistency", unit = "single")
-attention_icc <- attention_icc_values$value
-
-executive_attention_icc_scores <- cbind(TRAILAS_Z_INV,TRAILBS_Z_INV,SPANSF_Z,SPANSB_Z,DIGSYMWR_Z)
-executive_attention_icc_values <- icc(executive_attention_icc_scores, model = "twoway", type = "consistency", unit = "single")
-executive_attention_icc <- executive_attention_icc_values$value
-
-# Association with AI ####################################################################
-mdl_hippocampus_AI <- lm(Hippocampus_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
-summary(mdl_hippocampus_AI)
-
-mdl_DLPFC_AI <- lm(DLPFC_AI ~  Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
-summary(mdl_DLPFC_AI)
+CLOCKD_combo_Pearson_Correlation <- cor(data$executive_attention, data$CLOCKD, use = "complete.obs")
 
 # Association with Absolute AI ####################################################################
 mdl_Abs_hippocampus_AI <- lm(Abs_Hippocampus_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
@@ -184,48 +152,19 @@ summary(mdl_Abs_hippocampus_AI)
 mdl_Abs_DLPFC_AI <- lm(Abs_DLPFC_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
 summary(mdl_Abs_DLPFC_AI)
 
-# Cognitive Factors - Raw AI ################################################################
-#executive1 (0.0299), executive_attention (0.02)
-mdl_memory_raw_AI <- lm(memory ~ FaceName_PostScanAccuracy+DLPFC_AI + Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
-summary(mdl_memory_raw_AI)
-
-mdl_visiospatial_raw_AI <- lm(visiospatial ~ FaceName_PostScanAccuracy+DLPFC_AI + Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
-summary(mdl_visiospatial_raw_AI)
-
-mdl_language_raw_AI <- lm(language ~ FaceName_PostScanAccuracy+DLPFC_AI + Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
-summary(mdl_language_raw_AI)
-
-mdl_executive_raw_AI <- lm(executive ~ FaceName_PostScanAccuracy+DLPFC_AI + Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
-summary(mdl_executive_raw_AI)
-
-mdl_attention_raw_AI <- lm(attention ~ FaceName_PostScanAccuracy+DLPFC_AI + Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
-summary(mdl_attention_raw_AI)
-
-mdl_executive_attention_raw_AI <- lm(executive_attention ~ FaceName_PostScanAccuracy+DLPFC_AI + Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
-summary(mdl_executive_attention_raw_AI)
-
 # Cognitive Factors with All Variables - Absolute AI################################################################
 #Language (0.06), executive1 (0.0299), executive_attention (0.02)
-mdl_memory_abs_AI <- lm(memory ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
-summary(mdl_memory_abs_AI)
+mdl_memory_learning_abs_AI <- lm(memory_learning ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_memory_learning_abs_AI)
 
-mdl_immediate_memory_abs_AI <- lm(REYIM_Z ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
-summary(mdl_immediate_memory_abs_AI)
-
-mdl_delayed_memory_abs_AI <- lm(REYDE_Z ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
-summary(mdl_delayed_memory_abs_AI)
+mdl_memory_retrieval_abs_AI <- lm(memory_retrieval ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_memory_retrieval_abs_AI)
 
 mdl_visiospatial_abs_AI <- lm(visiospatial ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
 summary(mdl_visiospatial_abs_AI)
 
 mdl_language_abs_AI <- lm(language ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
 summary(mdl_language_abs_AI)
-
-mdl_executive_abs_AI <- lm(executive ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
-summary(mdl_executive_abs_AI)
-
-mdl_attention_abs_AI <- lm(attention ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
-summary(mdl_attention_abs_AI)
 
 mdl_executive_attention_abs_AI <- lm(executive_attention ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
 summary(mdl_executive_attention_abs_AI)
