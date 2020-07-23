@@ -55,6 +55,7 @@ data$Left_Hippocampus_FWHM[list] <- FWHM[,3][index]
 data$Right_Hippocampus_FWHM[list] <- FWHM[,4][index]
 data$Left_DLPFC_FWHM[list] <- FWHM[,5][index]
 data$Right_DLPFC_FWHM[list] <- FWHM[,6][index]
+
 # Recode Variables ##############################################################
 data$Race_cat <- data$Race != 'White' #not white = 1 (True)
 data$Education_cat <- data$Education > 12  #higher education = 1 (True)
@@ -263,60 +264,6 @@ library(kableExtra)
 if (!require("scales")) install.packages("scales")
 library(scales)
 ```
-
-## Cohort Demographics:
-
-``` {r demographicsData, echo = FALSE}
-# Demographics Table ###############################################################
-
-#Calculate Data - Some data missing
-num_subjects <- nrow(data)
-
-n_education <- length(data$Education_cat[!is.na(data$Education_cat)])
-mean_education <- mean(data$Education, na.rm = TRUE)
-stdv_education <- sd(data$Education, na.rm = TRUE)
-education_over_12 <- sum(data$Education_cat, na.rm = TRUE)
-education_under_12 <- length(data$Education_cat)-sum(data$Education_cat, na.rm = TRUE) - sum(is.na(data$Education_cat))
-percent_over_12 <- education_over_12 / (length(data$Education_cat) - sum(is.na(data$Education_cat)))
-percent_under_12 <- education_under_12 / (length(data$Education_cat) - sum(is.na(data$Education_cat)))
-
-n_age <- length(data$Age_CurrentVisit[!is.na(data$Age_CurrentVisit)])
-mean_age <- mean(data$Age_CurrentVisit, na.rm = TRUE)
-age_stdv <- sd(data$Age_CurrentVisit, na.rm = TRUE)
-
-n_sex <- length(data$Sex_cat[!is.na(data$Sex_cat)])
-male_count <- sum(data$Sex == "Male", na.rm = TRUE)
-percent_male <- male_count / (length(data$Sex) - sum(data$Sex == ""))
-female_count <- sum(data$Sex == "Female", na.rm = TRUE)
-percent_female <- female_count / (length(data$Sex) - sum(data$Sex == ""))
-
-n_race <- length(data$Race_cat[!is.na(data$Race_cat)])
-white_count <- sum(data$Race == "White")
-percent_white <- white_count / (length(data$Race) - sum(data$Race == ""))
-black_count <- sum(data$Race == "Black")
-percent_black <- black_count / (length(data$Race) - sum(data$Race == ""))
-asian_count <- sum(data$Race == "Asian")
-percent_asian <- asian_count / (length(data$Race) - sum(data$Race == ""))
-
-```
-
-<div style="margin-bottom:100px;">
-``` {r, echo = FALSE}
-#Make Table
-demographic_data <- data.frame(Variable = c("Total_Subjects","n", "Mean", "Standard Deviation", "Over 12 Years", "Under 12 Years", "n","Mean", "Standard Deviation", "n","Male Count", "Female Count", "n","White Count", "Black Count", "Asian Count"),
-                               Value = c(num_subjects, n_education, mean_education, stdv_education, education_over_12, education_under_12,n_age, mean_age, age_stdv, n_sex, male_count, female_count, n_race, white_count,black_count,asian_count),
-                               Percent = c("", "", "","", label_percent()(percent_over_12), label_percent()(percent_under_12),"","","","",label_percent()(percent_male), label_percent()(percent_female),"",label_percent()(percent_white),label_percent()(percent_black),label_percent()(percent_asian)))
-
-kable(demographic_data, caption = "Demographic data for normal aging", digits = 2) %>%
-  kable_styling(bootstrap_options = "striped", full_width = F, position = "left") %>%
-                pack_rows("Education", 2,6) %>%
-                pack_rows("Age", 7,9) %>%
-                pack_rows("Sex", 10,12) %>%
-                pack_rows("Race", 13,16)
-
-```
-</div>
-
 ## Regression Models:
 
 ## Hemispheric Asymmetry Models

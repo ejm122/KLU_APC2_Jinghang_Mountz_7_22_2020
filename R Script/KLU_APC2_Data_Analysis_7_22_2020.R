@@ -43,21 +43,24 @@ data$Left_Hippocampus_FWHM[list] <- FWHM[,3][index]
 data$Right_Hippocampus_FWHM[list] <- FWHM[,4][index]
 data$Left_DLPFC_FWHM[list] <- FWHM[,5][index]
 data$Right_DLPFC_FWHM[list] <- FWHM[,6][index]
+
 # Recode Variables ##############################################################
-data$Race_cat <- data$Race != 'White' #not white = 1 (True)
-data$Education_cat <- data$Education > 12  #higher education = 1 (True)
-data$Sex_cat <- (data$Sex == 'Male') #1 = male
-data$Sex_cat[data$Sex == "NaN"] = NA
+data$Race[data$Race == "NaN"] = NA
+data$Race_cat <- data$Race != 'White' #non-white = TRUE
+data$Education_cat <- data$Education > 12  #higher education = True
+data$Sex[data$Sex == "NaN"] = NA
+data$Sex_cat <- (data$Sex == 'Male') #TRUE = male
+data$PiBStatus_SUVR_GTM_FS_Global[data$PiBStatus_SUVR_GTM_FS_Global == "NaN"] = NA
+data$PiB_STATUS_CODE <- (data$PiBStatus_SUVR_GTM_FS_Global == "pos") #positive = TRUE 
+data$APOE_CODE[data$APOE_CODE == "NaN"] = NA
+data$APOE_STATUS_CODE <- data$APOE_CODE == "At Least One E4 Allele" #E4 allele = TRUE
+data$FaceName_PostScanAccuracy[data$FaceName_PostScanAccuracy == "NA"] <- NA
+data$FaceName_PostScanAccuracy <- as.numeric(data$FaceName_PostScanAccuracy)
+data$Abs_Hippocampus_AI <- abs(data$Hippocampus_AI)
+data$Abs_DLPFC_AI <- abs(data$DLPFC_AI)
 data$LETTER_FLUENCY <- (data$FLUENA + data$FLUENF+ data$FLUENS) / 3
 data$WREC_TOT <- (data$WREC + data$WREC2 + data$WREC3)
 data$STRINTERFERENCE <- (data$STRCW - data$STRCOL) / data$STRCOL
-data$PiB_STATUS_CODE <- (data$PiBStatus_SUVR_GTM_FS_Global == "pos")
-data$PiB_STATUS_CODE[data$PiBStatus_SUVR_GTM_FS_Global == "NaN"] = NA
-data$APOE_CODE[data$APOE_CODE == "NaN"] = NA
-data$Abs_Hippocampus_AI <- abs(data$Hippocampus_AI)
-data$Abs_DLPFC_AI <- abs(data$DLPFC_AI)
-data$FaceName_PostScanAccuracy[data$FaceName_PostScanAccuracy == "NA"] <- NA
-data$FaceName_PostScanAccuracy <- as.numeric(data$FaceName_PostScanAccuracy)
 
 #identifying PiB(+) subjects
 x_l_h <- data$Left_Hippocampus_Activation[data$PiB_STATUS_CODE == TRUE]
@@ -146,31 +149,100 @@ SPANSB_Combo_Pearson_Correlation <- cor(data$executive_attention, data$SPANSB, u
 CLOCKD_combo_Pearson_Correlation <- cor(data$executive_attention, data$CLOCKD, use = "complete.obs")
 
 # Association with Absolute AI ####################################################################
-mdl_Abs_hippocampus_AI <- lm(Abs_Hippocampus_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_Abs_hippocampus_AI <- lm(Abs_Hippocampus_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_Abs_hippocampus_AI)
 
-mdl_Abs_DLPFC_AI <- lm(Abs_DLPFC_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_Abs_DLPFC_AI <- lm(Abs_DLPFC_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_Abs_DLPFC_AI)
 
 # Cognitive Factors with All Variables - Absolute AI################################################################
 #Language (0.06), executive1 (0.0299), executive_attention (0.02)
-mdl_memory_learning_abs_AI <- lm(memory_learning ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_memory_learning_abs_AI <- lm(memory_learning ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_memory_learning_abs_AI)
 
-mdl_memory_retrieval_abs_AI <- lm(memory_retrieval ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_memory_retrieval_abs_AI <- lm(memory_retrieval ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_memory_retrieval_abs_AI)
 
-mdl_visiospatial_abs_AI <- lm(visiospatial ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_visiospatial_abs_AI <- lm(visiospatial ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_visiospatial_abs_AI)
 
-mdl_language_abs_AI <- lm(language ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_language_abs_AI <- lm(language ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_language_abs_AI)
 
-mdl_executive_attention_abs_AI <- lm(executive_attention ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_executive_attention_abs_AI <- lm(executive_attention ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_executive_attention_abs_AI)
 
-###############################################################################
+##########################################################################################################################
+# Cohort Demographic Cacluations
+age_mean <- mean(data$Age_CurrentVisit, na.rm = TRUE)
+age_sd <- sd(data$Age_CurrentVisit, na.rm = TRUE)
 
+sex_data <- as.data.frame(table(data$Sex_cat, useNA = "no"))
+no_male <- sex_data[2,2]
+percent_male <- no_male / (sex_data[1,2] + sex_data[2,2])
+
+race_data <- as.data.frame(table(data$Race_cat, useNA = "no"))
+no_non_white <- race_data[2,2]
+percent_non_white <- no_non_white / (race_data[1,2] + race_data[2,2])
+
+education_data <- as.data.frame(table(data$Education_cat, useNA = "no"))
+no_over_12_years <- education_data[2,2]
+percent_over_12_years <- no_over_12_years / (education_data[1,2] + education_data[2,2])
+
+PiB_data <- as.data.frame(table(data$PiB_STATUS_CODE, useNA = "no"))
+no_positive <- PiB_data[2,2]
+percent_positive <- no_positive / (PiB_data[1,2] + PiB_data[2,2])
+
+FDG_mean <- mean(data$FDG_SUVR_GTM_FS_Global, na.rm = TRUE)
+FDG_sd <- sd(data$FDG_SUVR_GTM_FS_Global, na.rm = TRUE)
+
+APOE_data <- as.data.frame(table(data$APOE_STATUS_CODE, useNA = "no"))
+no_E4 <- APOE_data[2,2]
+percent_E4 <- no_E4 / (APOE_data[1,2] + APOE_data[2,2])
+
+task_accuracy_mean <- mean(data$FaceName_PostScanAccuracy, na.rm = TRUE)
+task_accuracy_sd <- sd(data$FaceName_PostScanAccuracy, na.rm = TRUE)
+
+LMIAIMM_mean <- mean(data$LMIAIMM, na.rm= TRUE)
+LMIAIMM_sd <- sd(data$LMIAIMM, na.rm = TRUE)
+REYIM_mean <- mean(data$REYIM, na.rm = TRUE)
+REYIM_sd <- sd(data$REYIM, na.rm = TRUE)
+WREC_TOT_mean <- mean(data$WREC_TOT, na.rm = TRUE)
+WREC_TOT_sd <- sd(data$WREC_TOT, na.rm = TRUE)
+LMIIADEL_mean <- mean(data$LMIIADEL, na.rm = TRUE)
+LMIIADEL_sd <- sd(data$LMIIADEL, na.rm  = TRUE)
+REYDE_mean <- mean(data$REYDE, na.rm = TRUE)
+REYDE_sd <- sd(data$REYDE, na.rm = TRUE)
+WRECDE_mean <- mean(data$WRECDE, na.rm = TRUE)
+WRECDE_sd <- sd(data$WRECDE, na.rm = TRUE)
+BLOCKDES_mean <- mean(data$BLOCKDES, na.rm = TRUE)
+BLOCKDES_sd <- sd(data$BLOCKDES, na.rm = TRUE)
+REYCO_mean <- mean(data$REYCO, na.rm = TRUE)
+REYCO_sd <- sd(data$REYCO, na.rm = TRUE)
+FLUEN_mean <- mean(data$FLUEN, na.rm= TRUE)
+FLUEN_sd <- sd(data$FLUEN, na.rm = TRUE)
+LETTER_FLUENCY_mean <- mean(data$LETTER_FLUENCY, na.rm = TRUE)
+LETTER_FLUENCY_sd <- sd(data$LETTER_FLUENCY,na.rm=TRUE)
+BNT60TOT_mean <- mean(data$BNT60TOT, na.rm = TRUE)
+BNT60TOT_sd <- sd(data$BNT60TOT, na.rm = TRUE)
+TRAILAS_mean <- mean(data$TRAILAS,na.rm= TRUE)
+TRAILAS_sd <- sd(data$TRAILAS, na.rm = TRUE)
+TRAILBS_mean <- mean(data$TRAILBS, na.rm= TRUE)
+TRAILBS_sd <- sd(data$TRAILBS,na.rm = TRUE)
+CLOCKD_mean <- mean(data$CLOCKD, na.rm = TRUE)
+CLOCKD_sd <- sd(data$CLOCKD,na.rm = TRUE)
+SPANSF_mean <- mean(data$SPANSF, na.rm= TRUE)
+SPANSF_sd <- sd(data$SPANSF, na.rm = TRUE)
+SPANSB_mean <- mean(data$SPANSB,na.rm= TRUE)
+SPANSB_sd <- sd(data$SPANSB, na.rm= TRUE)
+STRCW_mean <- mean(data$STRCW, na.rm= TRUE)
+STRCW_sd <- sd(data$STRCW, na.rm = TRUE)
+DIGSYMWR_mean <- mean(data$DIGSYMWR,na.rm= TRUE)
+DIGSYMWR_sd <- sd(data$DIGSYMWR,na.rm = TRUE)
+
+
+
+################################################################################################################################
 save.image(file = "~/Desktop/RStudio Scripts/KLU_APC2_Data_Analysis_7_22_2020") #path for spreadsheet - saves all variables
 
 
