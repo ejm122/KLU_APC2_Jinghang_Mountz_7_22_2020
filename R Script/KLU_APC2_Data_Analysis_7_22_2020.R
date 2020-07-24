@@ -3,17 +3,17 @@ dev.off()
 pacman::p_load(pacman, rio)
 library(tibble)
 # IMPORTING Data ###########################################################
-# data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/KLU_APC2_Master_2020_07_01.xlsx")
-# activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/activ_values.txt")
-# AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/AI.txt")
-# FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/FWHM.txt")
-# FWHM <- abs(FWHM)
-
-data <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
-activation <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
-AI <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
-FWHM <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
+data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/KLU_APC2_Master_2020_07_22.xlsx")
+activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
+AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
+FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
 FWHM <- abs(FWHM)
+
+# data <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
+# activation <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
+# AI <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
+# FWHM <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
+# FWHM <- abs(FWHM)
 # Filter Data ##############################################################
 data <- data[is.na(data$FaceNames_Exclude) & data$Visit_Relative == 1,] #Issues with face name data and only 1 scan/subject - 87 observations
 list <- match(activation$Scan_ID,data$Vault_Scan_ID)
@@ -65,7 +65,8 @@ data$Abs_Hippocampus_AI <- abs(data$Hippocampus_AI)
 data$Abs_DLPFC_AI <- abs(data$DLPFC_AI)
 data$LETTER_FLUENCY <- (data$FLUENA + data$FLUENF+ data$FLUENS) / 3
 data$WREC_TOT <- (data$WREC + data$WREC2 + data$WREC3)
-data$STRINTERFERENCE <- (data$STRCW - data$STRCOL) / data$STRCOL
+Pred_STRCW <- (data$STRCOL*data$STRWRD) / (data$STRCOL+data$STRWRD)
+data$STRINTERFERENCE <- data$STRCW - Pred_STRCW
 
 #identifying PiB(+) subjects
 x_l_h <- data$Left_Hippocampus_Activation[data$PiB_STATUS_CODE == TRUE]
@@ -111,7 +112,7 @@ TRAILBS_Z <- (data$TRAILBS - mean(data$TRAILBS, na.rm = TRUE)) / sd(data$TRAILBS
 LMIAIMM_Z <- (data$LMIAIMM - mean(data$LMIAIMM, na.rm = TRUE)) /sd(data$LMIAIMM, na.rm = TRUE)
 LMIIADEL_Z <- (data$LMIIADEL - mean(data$LMIIADEL, na.rm = TRUE))/sd(data$LMIIADEL, na.rm = TRUE)
 DIGSYMWR_Z <- (data$DIGSYMWR - mean(data$DIGSYMWR, na.rm = TRUE))/sd(data$DIGSYMWR, na.rm = TRUE)
-STRCW_Z <- (data$STRCW - mean(data$STRCW, na.rm = TRUE)) / sd(data$STRCW, na.rm = TRUE)
+STRINTERFERENCE_Z <- (data$STRINTERFERENCE - mean(data$STRINTERFERENCE, na.rm = TRUE))/ sd(data$STRINTERFERENCE, na.rm = TRUE)
 TRAILAS_Z_INV <- -1 * TRAILAS_Z
 TRAILBS_Z_INV <- -1 * TRAILBS_Z
 
@@ -119,9 +120,9 @@ TRAILBS_Z_INV <- -1 * TRAILBS_Z
 #doi:10.1016/j.jalz.2017.12.003., doi:10.1080/13607860903071014. (Both Beth Snitz articles), https://www.ncbi.nlm.nih.gov/books/NBK285344/ - for SPANSB in Executive
 data$memory_learning <- (LMIAIMM_Z + REYIM_Z + WREC_TOT_Z) / 3
 data$memory_retrieval <- (LMIIADEL_Z + REYDE_Z + WRECDE_Z) / 3
-data$visiospatial <- (BLOCKDES_Z + REYCO_Z) / 2
+data$visuospatial <- (BLOCKDES_Z + REYCO_Z) / 2
 data$language <- (FLUEN_Z + LETTER_FLUENCY_Z + BNT60TOT_Z) / 3
-data$executive_attention <- (TRAILAS_Z_INV + TRAILBS_Z_INV + CLOCKD_Z + DIGSYMWR_Z + STRCW_Z + SPANSF_Z + SPANSB_Z) / 7
+data$executive_attention <- (TRAILAS_Z_INV + TRAILBS_Z_INV + CLOCKD_Z + DIGSYMWR_Z + STRINTERFERENCE_Z + SPANSF_Z + SPANSB_Z) / 7
 
 #Intraclass Correlation ################################################################
 # Pearson (Linear Correlation between composite and raw scores)
@@ -136,9 +137,9 @@ LMIIADEL_Pearson_Correlation <- cor(data$memory_learning, data$LMIIADEL, use = "
 REYDE_Pearson_Correlation <- cor(data$memory_learning, data$REYDE, use = "complete.obs")
 WRECDE_Pearson_Correlation <- cor(data$memory_learning, data$WRECDE, use = "complete.obs")
 
-# Visiospatial
-BLOCKDES_Pearson_Correlation <- cor(data$visiospatial, data$BLOCKDES, use = "complete.obs")
-REYCO_Pearson_Correlation <- cor(data$visiospatial, data$REYCO, use = "complete.obs")
+# Visuospatial
+BLOCKDES_Pearson_Correlation <- cor(data$visuospatial, data$BLOCKDES, use = "complete.obs")
+REYCO_Pearson_Correlation <- cor(data$visuospatial, data$REYCO, use = "complete.obs")
 
 #Langugae
 BNT60TOT_Pearson_Correlation <- cor(data$language, data$BNT60TOT, use = "complete.obs")
@@ -181,8 +182,8 @@ summary(mdl_memory_learning_abs_AI)
 mdl_memory_retrieval_abs_AI <- lm(memory_retrieval ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_memory_retrieval_abs_AI)
 
-mdl_visiospatial_abs_AI <- lm(visiospatial ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
-summary(mdl_visiospatial_abs_AI)
+mdl_visuospatial_abs_AI <- lm(visuospatial ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+summary(mdl_visuospatial_abs_AI)
 
 mdl_language_abs_AI <- lm(language ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_language_abs_AI)
@@ -193,6 +194,18 @@ summary(mdl_executive_attention_abs_AI)
 #executive_attention (0.001183)
 mdl_memory_learning_FWHM <- lm(memory_learning ~ FaceName_PostScanAccuracy+ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_memory_learning_FWHM)
+
+mdl_memory_retrieval_fwhm <- lm(memory_retrieval ~ FaceName_PostScanAccuracy + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+summary(mdl_memory_retrieval_fwhm)
+
+mdl_visuospatial_fwhm <- lm(visuospatial ~ FaceName_PostScanAccuracy + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+summary(mdl_visuospatial_fwhm)
+
+mdl_language_fwhm <- lm(language ~FaceName_PostScanAccuracy + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+summary(mdl_language_fwhm)
+
+mdl_executive_attention_fwhm <- lm(executive_attention ~ FaceName_PostScanAccuracy+ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+summary(mdl_executive_attention_fwhm)
 
 ##########################################################################################################################
 # Cohort Demographic Cacluations
@@ -261,6 +274,8 @@ STRCW_mean <- mean(data$STRCW, na.rm= TRUE)
 STRCW_sd <- sd(data$STRCW, na.rm = TRUE)
 DIGSYMWR_mean <- mean(data$DIGSYMWR,na.rm= TRUE)
 DIGSYMWR_sd <- sd(data$DIGSYMWR,na.rm = TRUE)
+
+#Add Values for each cognitive domain to cohort table!!
 
 
 
