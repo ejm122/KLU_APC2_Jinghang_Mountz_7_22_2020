@@ -1,16 +1,21 @@
 rm(list=ls())
 dev.off()
-pacman::p_load(pacman, rio) 
+pacman::p_load(pacman, rio)
 library(tibble)
 # IMPORTING Data ###########################################################
-data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
-activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
-AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
-FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
+# data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/KLU_APC2_Master_2020_07_01.xlsx")
+# activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/activ_values.txt")
+# AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/AI.txt")
+# FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/FWHM.txt")
+# FWHM <- abs(FWHM)
+
+data <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
+activation <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
+AI <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
+FWHM <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
 FWHM <- abs(FWHM)
 # Filter Data ##############################################################
-data <- data[-c(which(data$FaceNames_Exclude == 'Yes')),]
-data <- data[data$Visit_Relative == 1,] #Issues with face name data and only 1 scan/subject - 87 observations
+data <- data[is.na(data$FaceNames_Exclude) & data$Visit_Relative == 1,] #Issues with face name data and only 1 scan/subject - 87 observations
 list <- match(activation$Scan_ID,data$Vault_Scan_ID)
 index <- which(list!=0,arr.ind = T)
 list <- na.omit(match(activation$Scan_ID, data$Vault_Scan_ID))
@@ -51,7 +56,7 @@ data$Education_cat <- data$Education > 12  #higher education = True
 data$Sex[data$Sex == "NaN"] = NA
 data$Sex_cat <- (data$Sex == 'Male') #TRUE = male
 data$PiBStatus_SUVR_GTM_FS_Global[data$PiBStatus_SUVR_GTM_FS_Global == "NaN"] = NA
-data$PiB_STATUS_CODE <- (data$PiBStatus_SUVR_GTM_FS_Global == "pos") #positive = TRUE 
+data$PiB_STATUS_CODE <- (data$PiBStatus_SUVR_GTM_FS_Global == "pos") #positive = TRUE
 data$APOE_CODE[data$APOE_CODE == "NaN"] = NA
 data$APOE_STATUS_CODE <- data$APOE_CODE == "At Least One E4 Allele" #E4 allele = TRUE
 data$FaceName_PostScanAccuracy[data$FaceName_PostScanAccuracy == "NA"] <- NA
@@ -113,7 +118,7 @@ TRAILBS_Z_INV <- -1 * TRAILBS_Z
 # Domain Scores #########################################################################
 #doi:10.1016/j.jalz.2017.12.003., doi:10.1080/13607860903071014. (Both Beth Snitz articles), https://www.ncbi.nlm.nih.gov/books/NBK285344/ - for SPANSB in Executive
 data$memory_learning <- (LMIAIMM_Z + REYIM_Z + WREC_TOT_Z) / 3
-data$memory_retrieval <- (LMIIADEL_Z + REYDE_Z + WRECDE_Z) / 3 
+data$memory_retrieval <- (LMIIADEL_Z + REYDE_Z + WRECDE_Z) / 3
 data$visiospatial <- (BLOCKDES_Z + REYCO_Z) / 2
 data$language <- (FLUEN_Z + LETTER_FLUENCY_Z + BNT60TOT_Z) / 3
 data$executive_attention <- (TRAILAS_Z_INV + TRAILBS_Z_INV + CLOCKD_Z + DIGSYMWR_Z + STRCW_Z + SPANSF_Z + SPANSB_Z) / 7
@@ -155,6 +160,19 @@ summary(mdl_Abs_hippocampus_AI)
 mdl_Abs_DLPFC_AI <- lm(Abs_DLPFC_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_Abs_DLPFC_AI)
 
+# Association with FWHM ####################################################################
+#left hippocampus fwhm (p = 0.06307)
+mdl_left_hippocampus_FWHM <- lm(Left_Hippocampus_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_left_hippocampus_FWHM )
+
+mdl_right_hippocampus_FWHM <- lm(Right_Hippocampus_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_right_hippocampus_FWHM )
+
+mdl_left_dlpfc_FWHM <- lm(Left_DLPFC_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_left_dlpfc_FWHM )
+
+mdl_right_dlpfc_FWHM <- lm(Right_DLPFC_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+summary(mdl_right_dlpfc_FWHM )
 # Cognitive Factors with All Variables - Absolute AI################################################################
 #Language (0.06), executive1 (0.0299), executive_attention (0.02)
 mdl_memory_learning_abs_AI <- lm(memory_learning ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
@@ -171,6 +189,10 @@ summary(mdl_language_abs_AI)
 
 mdl_executive_attention_abs_AI <- lm(executive_attention ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_executive_attention_abs_AI)
+# Cognitive Factors with All Variables - FWHM ################################################################
+#executive_attention (0.001183)
+mdl_memory_learning_FWHM <- lm(memory_learning ~ FaceName_PostScanAccuracy+ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+summary(mdl_memory_learning_FWHM)
 
 ##########################################################################################################################
 # Cohort Demographic Cacluations
@@ -244,7 +266,3 @@ DIGSYMWR_sd <- sd(data$DIGSYMWR,na.rm = TRUE)
 
 ################################################################################################################################
 save.image(file = "~/Desktop/RStudio Scripts/KLU_APC2_Data_Analysis_7_22_2020") #path for spreadsheet - saves all variables
-
-
-
-

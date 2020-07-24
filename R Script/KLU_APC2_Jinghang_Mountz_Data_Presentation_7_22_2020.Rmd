@@ -15,10 +15,16 @@ dev.off()
 pacman::p_load(pacman, rio) 
 library(tibble)
 # IMPORTING Data ###########################################################
-data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
-activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
-AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
-FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
+# data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/KLU_APC2_Master_2020_07_01.xlsx")
+# activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/activ_values.txt")
+# AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/AI.txt")
+# FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_20_2020/Appending_to_Master/FWHM.txt")
+# FWHM <- abs(FWHM)
+
+data <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
+activation <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
+AI <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
+FWHM <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
 FWHM <- abs(FWHM)
 # Filter Data ##############################################################
 data <- data[-c(which(data$FaceNames_Exclude == 'Yes')),]
@@ -251,9 +257,100 @@ executive_attention_abs_df2 <- summary(mdl_executive_attention_abs_AI)$fstatisti
 executive_attention_abs_pval <- lmp(mdl_executive_attention_abs_AI)
 ```
 
-<!-- ``` { r new_model, echo = FALSE} -->
+``` {r fwhm_L_hippocampus, echo = FALSE}
+# Regression Models FWHM #####################################################################################
+mdl_left_hippocampus_fwhm <- lm(Left_Hippocampus_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
 
-<!-- ``` -->
+left_hippocampus_rsquared <- summary(mdl_left_hippocampus_fwhm)$r.squared
+left_hippocampus_fstat <- summary(mdl_left_hippocampus_fwhm)$fstatistic[1]
+left_hippocampus_df1 <- summary(mdl_left_hippocampus_fwhm)$fstatistic[2]
+left_hippocampus_df2 <- summary(mdl_left_hippocampus_fwhm)$fstatistic[3]
+left_hippocampus_pval <- lmp(mdl_left_hippocampus_fwhm)
+```
+
+``` {r fwhm_R_hippocampus, echo = FALSE}
+mdl_right_hippocampus_fwhm <- lm(Right_Hippocampus_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+
+right_hippocampus_rsquared <- summary(mdl_right_hippocampus_fwhm)$r.squared
+right_hippocampus_fstat <- summary(mdl_right_hippocampus_fwhm)$fstatistic[1]
+right_hippocampus_df1 <- summary(mdl_right_hippocampus_fwhm)$fstatistic[2]
+right_hippocampus_df2 <- summary(mdl_right_hippocampus_fwhm)$fstatistic[3]
+right_hippocampus_pval <- lmp(mdl_right_hippocampus_fwhm)
+```
+
+``` {r fwhm_L_dlpfc, echo = FALSE}
+mdl_left_dlpfc_fwhm <- lm(Left_DLPFC_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+
+left_dlpfc_rsquared <- summary(mdl_left_dlpfc_fwhm)$r.squared
+left_dlpfc_fstat <- summary(mdl_left_dlpfc_fwhm)$fstatistic[1]
+left_dlpfc_df1 <- summary(mdl_left_dlpfc_fwhm)$fstatistic[2]
+left_dlpfc_df2 <- summary(mdl_left_dlpfc_fwhm)$fstatistic[3]
+left_dlpfc_pval <- lmp(mdl_left_dlpfc_fwhm)
+```
+
+``` {r fwhm_R_dlpfc, echo = FALSE}
+mdl_right_dlpfc_fwhm <- lm(Right_DLPFC_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+
+right_dlpfc_rsquared <- summary(mdl_right_dlpfc_fwhm)$r.squared
+right_dlpfc_fstat <- summary(mdl_right_dlpfc_fwhm)$fstatistic[1]
+right_dlpfc_df1 <- summary(mdl_right_dlpfc_fwhm)$fstatistic[2]
+right_dlpfc_df2 <- summary(mdl_right_dlpfc_fwhm)$fstatistic[3]
+right_dlpfc_pval <- lmp(mdl_right_dlpfc_fwhm)
+```
+
+``` {r memory_learning_fwhm, echo = FALSE}
+# Cognitive Factors  - FWHM ################################################################
+mdl_memory_learning_fwhm <- lm(memory_learning ~ FaceName_PostScanAccuracy + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+
+memory_learning_fwhm_rsquared <- summary(mdl_memory_learning_fwhm)$r.squared
+memory_learning_fwhm_fstat <- summary(mdl_memory_learning_fwhm)$fstatistic[1]
+memory_learning_fwhm_df1 <- summary(mdl_memory_learning_fwhm)$fstatistic[2]
+memory_learning_fwhm_df2 <- summary(mdl_memory_learning_fwhm)$fstatistic[3]
+memory_learning_fwhm_pval <- lmp(mdl_memory_learning_fwhm)
+```
+
+``` {r memory_retrieval_fwhm, echo = FALSE}
+mdl_memory_retrieval_fwhm <- lm(memory_retrieval ~ FaceName_PostScanAccuracy + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+
+memory_retrieval_fwhm_rsquared <- summary(mdl_memory_retrieval_fwhm)$r.squared
+memory_retrieval_fwhm_fstat <- summary(mdl_memory_retrieval_fwhm)$fstatistic[1]
+memory_retrieval_fwhm_df1 <- summary(mdl_memory_retrieval_fwhm)$fstatistic[2]
+memory_retrieval_fwhm_df2 <- summary(mdl_memory_retrieval_fwhm)$fstatistic[3]
+memory_retrieval_fwhm_pval <- lmp(mdl_memory_retrieval_fwhm)
+```
+
+``` {r visiospatial_fwhm, echo = FALSE}
+
+mdl_visiospatial_fwhm <- lm(visiospatial ~ FaceName_PostScanAccuracy + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+
+visiospatial_fwhm_rsquared <- summary(mdl_visiospatial_fwhm)$r.squared
+visiospatial_fwhm_fstat <- summary(mdl_visiospatial_fwhm)$fstatistic[1]
+visiospatial_fwhm_df1 <- summary(mdl_visiospatial_fwhm)$fstatistic[2]
+visiospatial_fwhm_df2 <- summary(mdl_visiospatial_fwhm)$fstatistic[3]
+visiospatial_fwhm_pval <- lmp(mdl_visiospatial_fwhm)
+```
+
+``` {r language_fwhm, echo = FALSE}
+
+mdl_language_fwhm <- lm(language ~FaceName_PostScanAccuracy + Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+
+language_fwhm_rsquared <- summary(mdl_language_fwhm)$r.squared
+language_fwhm_fstat <- summary(mdl_language_fwhm)$fstatistic[1]
+language_fwhm_df1 <- summary(mdl_language_fwhm)$fstatistic[2]
+language_fwhm_df2 <- summary(mdl_language_fwhm)$fstatistic[3]
+language_fwhm_pval <- lmp(mdl_language_fwhm)
+```
+
+``` {r executive_attention_fwhm, echo = FALSE}
+
+mdl_executive_attention_fwhm <- lm(executive_attention ~ FaceName_PostScanAccuracy+ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+
+executive_attention_fwhm_rsquared <- summary(mdl_executive_attention_fwhm)$r.squared
+executive_attention_fwhm_fstat <- summary(mdl_executive_attention_fwhm)$fstatistic[1]
+executive_attention_fwhm_df1 <- summary(mdl_executive_attention_fwhm)$fstatistic[2]
+executive_attention_fwhm_df2 <- summary(mdl_executive_attention_fwhm)$fstatistic[3]
+executive_attention_fwhm_pval <- lmp(mdl_executive_attention_fwhm)
+```
 
 ``` {r modelSetUp, echo = FALSE, include = FALSE}
 if (!require("sjPlot")) install.packages("sjPlot")
@@ -305,9 +402,9 @@ tab_model(mdl_Abs_DLPFC_AI, dv.labels = "DLPFC Absolute AI",
 ```
 </div>
 
-## Cogntive Domains
+## Cogntive Domains (Abs AI)
 
-**Interclass Correlation**
+<!-- **Interclass Correlation** -->
 
 <!-- ``` {r domain_correlation, echo = FALSE} -->
 <!-- # Correlation Tables ######################################################################## -->
@@ -421,25 +518,150 @@ tab_model(mdl_executive_attention_abs_AI, dv.labels = "Executive_Attention",
 
 # FWHM Regressions
 
-**New Model**
+**Left Hippocampus FWHM**
+<div style="margin-bottom:100px;">
+``` {r left_hippocampus_fwhm_data, echo = FALSE}
+left_hippocampus_fwhm_data <- data.frame(Variable = c(paste("F( ", left_hippocampus_df1, ",", left_hippocampus_df2,")"),"R^2","p-value"),
+                               Value = c(left_hippocampus_fstat,left_hippocampus_rsquared, left_hippocampus_pval))
 
-<!-- <div style="margin-bottom:100px;"> -->
-<!-- ``` {r new_model_data, echo = FALSE} -->
-<!-- new_model_data <- data.frame(Variable = c(paste("F( ", new_model_df1, ",", new_model_df2,")"),"R^2","p-value"), -->
-<!--                                Value = c(new_model_fstat,new_model_rsquared, new_model_pval)) -->
+kable(left_hippocampus_fwhm_data, caption = "Left Hippocampus FWHM Summary", digits = 3) %>%
+kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
 
-<!-- kable(new_model_data, caption = "New Model Name Summary", digits = 3) %>% -->
-<!--   kable_styling(bootstrap_options = "striped", full_width = F, position = "left") -->
-<!-- ``` -->
+``` {r left_hippocampus_fwhm_coefficients, echo = FALSE}
+tab_model(mdl_left_hippocampus_fwhm, dv.labels = "Left Hippocampus FWHM",
+          pred.labels = c("Intercept","Age","Sex", "Race", "Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
 
-<!-- ``` {r executive_attention_abs_coefficients, echo = FALSE} -->
-<!-- tab_model(new_model, dv.labels = "New Model Title", -->
-<!--           pred.labels = c("Intercept","Task Accuracy","DLPFC Absolute AI", "Hippocampus Absolute AI", "Age at Visit", "Sex", "Race", -->
-<!--                           "Education (years)", "FDG Global",  -->
-<!--                           "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE) -->
-<!-- ``` -->
-<!-- </div> -->
+**Right Hippocampus FWHM**
+<div style="margin-bottom:100px;">
+``` {r right_hippocampus_fwhm_data, echo = FALSE}
+right_hippocampus_fwhm_data <- data.frame(Variable = c(paste("F( ", right_hippocampus_df1, ",", right_hippocampus_df2,")"),"R^2","p-value"),
+                               Value = c(right_hippocampus_fstat,right_hippocampus_rsquared, right_hippocampus_pval))
 
+kable(right_hippocampus_fwhm_data, caption = "Right Hippocampus FWHM Summary", digits = 3) %>%
+kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r right_hippocampus_fwhm_coefficients, echo = FALSE}
+tab_model(mdl_right_hippocampus_fwhm, dv.labels = "Right Hippocampus FWHM",
+          pred.labels = c("Intercept","Age","Sex", "Race", "Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+**Left DLPFC FWHM**
+<div style="margin-bottom:100px;">
+``` {r left_dlpfc_fwhm_data, echo = FALSE}
+left_dlpfc_fwhm_data <- data.frame(Variable = c(paste("F( ", left_dlpfc_df1, ",", left_dlpfc_df2,")"),"R^2","p-value"),
+                               Value = c(left_dlpfc_fstat,left_dlpfc_rsquared, left_dlpfc_pval))
+
+kable(left_dlpfc_fwhm_data, caption = "Left DLPFC FWHM Summary", digits = 3) %>%
+kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r left_dlpfc_fwhm_coefficients, echo = FALSE}
+tab_model(mdl_left_dlpfc_fwhm, dv.labels = "Left DLPFC FWHM",
+          pred.labels = c("Intercept","Age","Sex", "Race", "Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+**Right DLPFC FWHM**
+<div style="margin-bottom:100px;">
+``` {r right_dlpfc_fwhm_data, echo = FALSE}
+right_dlpfc_fwhm_data <- data.frame(Variable = c(paste("F( ", right_dlpfc_df1, ",", right_dlpfc_df2,")"),"R^2","p-value"),
+                               Value = c(right_dlpfc_fstat,right_dlpfc_rsquared, right_dlpfc_pval))
+
+kable(right_dlpfc_fwhm_data, caption = "Right DLPFC FWHM Summary", digits = 3) %>%
+kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r right_dlpfc_fwhm_coefficients, echo = FALSE}
+tab_model(mdl_right_dlpfc_fwhm, dv.labels = "Right DLPFC FWHM",
+          pred.labels = c("Intercept","Age","Sex", "Race", "Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+## Cogntive Domains (FWHM)
+**Memory Learning Domain**
+<div style="margin-bottom:100px;">
+``` {r memory_learning_fwhm_data, echo = FALSE}
+memory_learning_fwhm_data <- data.frame(Variable = c(paste("F( ", memory_learning_fwhm_df1, ",", memory_learning_fwhm_df2,")"),"R^2","p-value"),
+                               Value = c(memory_learning_fwhm_fstat,memory_learning_fwhm_rsquared,memory_learning_fwhm_pval))
+
+kable(memory_learning_fwhm_data, caption = "Memory Learning Summary", digits = 3) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r memory_learning_fwhm_coefficients, echo = FALSE}
+tab_model(mdl_memory_learning_fwhm, dv.labels = "Memory Learning",
+          pred.labels = c("Intercept","FaceName_PostScanAccuracy", "Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+**Memory Retrieval Learning Domain**
+<div style="margin-bottom:100px;">
+``` {r memory_retrieval_fwhm_data, echo = FALSE}
+memory_retrieval_fwhm_data <- data.frame(Variable = c(paste("F( ", memory_retrieval_fwhm_df1, ",", memory_retrieval_fwhm_df2,")"),"R^2","p-value"),
+                               Value = c(memory_retrieval_fwhm_fstat,memory_retrieval_fwhm_rsquared,memory_retrieval_fwhm_pval))
+
+kable(memory_retrieval_fwhm_data, caption = "Memory Retrieval Summary", digits = 3) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r memory_retrieval_fwhm_coefficients, echo = FALSE}
+tab_model(mdl_memory_retrieval_fwhm, dv.labels = "Memory Retrieval",
+          pred.labels = c("Intercept","FaceName_PostScanAccuracy", "Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+**Visiospatial Domain**
+<div style="margin-bottom:100px;">
+``` {r visiospatial_fwhm_data, echo = FALSE}
+visiospatial_fwhm_data <- data.frame(Variable = c(paste("F( ", visiospatial_fwhm_df1, ",", visiospatial_fwhm_df2,")"),"R^2","p-value"),
+                               Value = c(visiospatial_fwhm_fstat, visiospatial_fwhm_rsquared, visiospatial_fwhm_pval))
+
+kable(visiospatial_fwhm_data, caption = "Visiospatial Summary", digits = 3) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r visiospatial_fwhm_coefficients, echo = FALSE}
+tab_model(mdl_visiospatial_fwhm, dv.labels = "Visiospatial",
+          pred.labels = c("Intercept","FaceName_PostScanAccuracy", "Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+**Language Domain**
+<div style="margin-bottom:100px;">
+``` {r language_fwhm_data, echo = FALSE}
+language_fwhm_data <- data.frame(Variable = c(paste("F( ", language_fwhm_df1, ",", language_fwhm_df2,")"),"R^2","p-value"),
+                               Value = c(language_fwhm_fstat, language_fwhm_rsquared, language_fwhm_pval))
+
+kable(language_fwhm_data, caption = "Language Summary", digits = 3) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r language_fwhm_coefficients, echo = FALSE}
+tab_model(mdl_language_fwhm, dv.labels = "Language",
+          pred.labels = c("Intercept","FaceName_PostScanAccuracy", "Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+**Executive_Attention Domain**
+<div style="margin-bottom:100px;">
+``` {r Executive_Attention_fwhm_data, echo = FALSE}
+executive_attention_fwhm_data <- data.frame(Variable = c(paste("F( ", executive_attention_fwhm_df1, ",", executive_attention_fwhm_df2,")"),"R^2","p-value"),
+                               Value = c(executive_attention_fwhm_fstat, executive_attention_fwhm_rsquared, executive_attention_fwhm_pval))
+
+kable(executive_attention_fwhm_data, caption = "Executive_Attention Summary", digits = 3) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r executive_attention_fwhm_coefficients, echo = FALSE}
+tab_model(mdl_executive_attention_fwhm, dv.labels = "Executive_Attention",
+          pred.labels = c("Intercept", "FaceName_PostScanAccuracy", "Left_Hippocampus_FWHM","Right_Hippocampus_FWHM", "Left_DLPFC_FWHM", "Right_DLPFC_FWHM", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
 
 
 
