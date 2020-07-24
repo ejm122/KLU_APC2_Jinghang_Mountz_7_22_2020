@@ -162,19 +162,19 @@ summary(mdl_Abs_DLPFC_AI)
 
 # Association with FWHM ####################################################################
 #left hippocampus fwhm (p = 0.06307)
-mdl_left_hippocampus_FWHM <- lm(Left_Hippocampus_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_left_hippocampus_FWHM <- lm(Left_Hippocampus_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_left_hippocampus_FWHM )
 
-mdl_right_hippocampus_FWHM <- lm(Right_Hippocampus_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_right_hippocampus_FWHM <- lm(Right_Hippocampus_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_right_hippocampus_FWHM )
 
-mdl_left_dlpfc_FWHM <- lm(Left_DLPFC_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_left_dlpfc_FWHM <- lm(Left_DLPFC_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_left_dlpfc_FWHM )
 
-mdl_right_dlpfc_FWHM <- lm(Right_DLPFC_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_right_dlpfc_FWHM <- lm(Right_DLPFC_FWHM ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_right_dlpfc_FWHM )
 # Cognitive Factors with All Variables - Absolute AI################################################################
-#Language (0.06), executive1 (0.0299), executive_attention (0.02)
+#Executive_attention
 mdl_memory_learning_abs_AI <- lm(memory_learning ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_memory_learning_abs_AI)
 
