@@ -62,21 +62,23 @@ data$Right_Hippocampus_FWHM[list] <- FWHM[,4][index]
 data$Left_DLPFC_FWHM[list] <- FWHM[,5][index]
 data$Right_DLPFC_FWHM[list] <- FWHM[,6][index]
 
-# Recode Variables ##############################################################
-data$Race_cat <- data$Race != 'White' #not white = 1 (True)
-data$Education_cat <- data$Education > 12  #higher education = 1 (True)
-data$Sex_cat <- (data$Sex == 'Male') #1 = male
-data$Sex_cat[data$Sex == "NaN"] = NA
+# Recode Variables ###############################################################3
+data$Race[data$Race == "NaN"] = NA
+data$Race_cat <- data$Race != 'White' #non-white = TRUE
+data$Education_cat <- data$Education > 12  #higher education = True
+data$Sex[data$Sex == "NaN"] = NA
+data$Sex_cat <- (data$Sex == 'Male') #TRUE = male
+data$PiBStatus_SUVR_GTM_FS_Global[data$PiBStatus_SUVR_GTM_FS_Global == "NaN"] = NA
+data$PiB_STATUS_CODE <- (data$PiBStatus_SUVR_GTM_FS_Global == "pos") #positive = TRUE 
+data$APOE_CODE[data$APOE_CODE == "NaN"] = NA
+data$APOE_STATUS_CODE <- data$APOE_CODE == "At Least One E4 Allele" #E4 allele = TRUE
+data$FaceName_PostScanAccuracy[data$FaceName_PostScanAccuracy == "NA"] <- NA
+data$FaceName_PostScanAccuracy <- as.numeric(data$FaceName_PostScanAccuracy)
+data$Abs_Hippocampus_AI <- abs(data$Hippocampus_AI)
+data$Abs_DLPFC_AI <- abs(data$DLPFC_AI)
 data$LETTER_FLUENCY <- (data$FLUENA + data$FLUENF+ data$FLUENS) / 3
 data$WREC_TOT <- (data$WREC + data$WREC2 + data$WREC3)
 data$STRINTERFERENCE <- (data$STRCW - data$STRCOL) / data$STRCOL
-data$PiB_STATUS_CODE <- (data$PiBStatus_SUVR_GTM_FS_Global == "pos")
-data$PiB_STATUS_CODE[data$PiBStatus_SUVR_GTM_FS_Global == "NaN"] = NA
-data$APOE_CODE[data$APOE_CODE == "NaN"] = NA
-data$Abs_Hippocampus_AI <- abs(data$Hippocampus_AI)
-data$Abs_DLPFC_AI <- abs(data$DLPFC_AI)
-data$FaceName_PostScanAccuracy[data$FaceName_PostScanAccuracy == "NA"] <- NA
-data$FaceName_PostScanAccuracy <- as.numeric(data$FaceName_PostScanAccuracy)
 
 #identifying PiB(+) subjects
 x_l_h <- data$Left_Hippocampus_Activation[data$PiB_STATUS_CODE == TRUE]
@@ -180,7 +182,7 @@ lmp <- function (modelobject) {
 ```
 
 ``` {r Abs_hippocampus, echo = FALSE}
-mdl_Abs_hippocampus_AI <- lm(Abs_Hippocampus_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_Abs_hippocampus_AI <- lm(Abs_Hippocampus_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 
 abs_hippocampus_rsquared <- summary(mdl_Abs_hippocampus_AI)$r.squared
 abs_hippocampus_fstat <- summary(mdl_Abs_hippocampus_AI)$fstatistic[1]
@@ -190,7 +192,7 @@ abs_hippocampus_pval <- lmp(mdl_Abs_hippocampus_AI)
 ```
 
 ``` {r Abs_DLPFC, echo = FALSE}
-mdl_Abs_DLPFC_AI <- lm(Abs_DLPFC_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_Abs_DLPFC_AI <- lm(Abs_DLPFC_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 
 abs_DLPFC_rsquared <- summary(mdl_Abs_DLPFC_AI)$r.squared
 abs_DLPFC_fstat <- summary(mdl_Abs_DLPFC_AI)$fstatistic[1]
@@ -202,7 +204,7 @@ abs_DLPFC_pval <- lmp(mdl_Abs_DLPFC_AI)
 
 ``` {r memory_learning_abs, echo = FALSE}
 # Cognitive Factors  - Absolute AI################################################################
-mdl_memory_learning_abs_AI <- lm(memory_learning ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_memory_learning_abs_AI <- lm(memory_learning ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 
 memory_learning_abs_rsquared <- summary(mdl_memory_learning_abs_AI)$r.squared
 memory_learning_abs_fstat <- summary(mdl_memory_learning_abs_AI)$fstatistic[1]
@@ -213,7 +215,7 @@ memory_learning_abs_pval <- lmp(mdl_memory_learning_abs_AI)
 ```
 
 ``` {r memory_retrieval_abs, echo = FALSE}
-mdl_memory_retrieval_abs_AI <- lm(memory_retrieval ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_memory_retrieval_abs_AI <- lm(memory_retrieval ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 
 memory_retrieval_abs_rsquared <- summary(mdl_memory_retrieval_abs_AI)$r.squared
 memory_retrieval_abs_fstat <- summary(mdl_memory_retrieval_abs_AI)$fstatistic[1]
@@ -225,7 +227,7 @@ memory_retrieval_abs_pval <- lmp(mdl_memory_retrieval_abs_AI)
 
 ``` {r visiospatial_abs, echo = FALSE}
 
-mdl_visiospatial_abs_AI <- lm(visiospatial ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_visiospatial_abs_AI <- lm(visiospatial ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 
 visiospatial_abs_rsquared <- summary(mdl_visiospatial_abs_AI)$r.squared
 visiospatial_abs_fstat <- summary(mdl_visiospatial_abs_AI)$fstatistic[1]
@@ -237,7 +239,7 @@ visiospatial_abs_pval <- lmp(mdl_visiospatial_abs_AI)
 
 ``` {r language_abs, echo = FALSE}
 
-mdl_language_abs_AI <- lm(language ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_language_abs_AI <- lm(language ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 
 language_abs_rsquared <- summary(mdl_language_abs_AI)$r.squared
 language_abs_fstat <- summary(mdl_language_abs_AI)$fstatistic[1]
@@ -248,7 +250,7 @@ language_abs_pval <- lmp(mdl_language_abs_AI)
 ```
 
 ``` {r executive_attention_abs, echo = FALSE}
-mdl_executive_attention_abs_AI <- lm(executive_attention ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_CODE, data = data)
+mdl_executive_attention_abs_AI <- lm(executive_attention ~ FaceName_PostScanAccuracy+Abs_DLPFC_AI + Abs_Hippocampus_AI+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 
 executive_attention_abs_rsquared <- summary(mdl_executive_attention_abs_AI)$r.squared
 executive_attention_abs_fstat <- summary(mdl_executive_attention_abs_AI)$fstatistic[1]
