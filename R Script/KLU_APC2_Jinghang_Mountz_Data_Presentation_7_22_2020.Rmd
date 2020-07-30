@@ -9,10 +9,14 @@ output: "html_document"
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+# ```{r source, include=FALSE}
+# source('/Users/elizabethmountz/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/R Script/KLU_APC2_Data_Analysis_7_22_2020.R')
+# ```
+
 ``` {r dataCollect, include = FALSE, echo = FALSE}
 rm(list=ls())
 dev.off()
-pacman::p_load(pacman, rio) 
+pacman::p_load(pacman, rio)
 library(tibble)
 
 # IMPORTING Data ###########################################################
@@ -134,7 +138,7 @@ TRAILBS_Z_INV <- -1 * TRAILBS_Z
 # Domain Scores #########################################################################
 #doi:10.1016/j.jalz.2017.12.003., doi:10.1080/13607860903071014. (Both Beth Snitz articles), https://www.ncbi.nlm.nih.gov/books/NBK285344/ - for SPANSB in Executive
 data$memory_learning <- (LMIAIMM_Z + REYIM_Z + WREC_TOT_Z) / 3
-data$memory_retrieval <- (LMIIADEL_Z + REYDE_Z + WRECDE_Z) / 3 
+data$memory_retrieval <- (LMIIADEL_Z + REYDE_Z + WRECDE_Z) / 3
 data$visuospatial <- (BLOCKDES_Z + REYCO_Z) / 2
 data$language <- (FLUEN_Z + LETTER_FLUENCY_Z + BNT60TOT_Z) / 3
 data$executive_attention <- (TRAILAS_Z_INV + TRAILBS_Z_INV + CLOCKD_Z + DIGSYMWR_Z + STRINTERFERENCE_Z + SPANSF_Z + SPANSB_Z) / 7
@@ -408,27 +412,6 @@ tab_model(mdl_Abs_DLPFC_AI, dv.labels = "DLPFC Absolute AI",
 </div>
 
 ## Cogntive Domains (Abs AI)
-
-<!-- **Interclass Correlation** -->
-
-<!-- ``` {r domain_correlation, echo = FALSE} -->
-<!-- # Correlation Tables ######################################################################## -->
-<!-- Pearson_Correlation_data <- data.frame(Variable = c("Modified Rey Figure Delayed Recall","Modified Rey Figure Immediate Recall", "Modified Block Design","Modified Rey Figure Copy","Boston Naming Test (30-item)","Fluency - Animals","Trails B","Digit Span Backward","Trails A","Digit Span Forward","Digit Symbol Substitution Test","Trails A","Digit Span Forward","Trails B","Digit Span Backward"), -->
-<!--                                        Pearson_Correlation = c(REYDE_Pearson_Correlation,REYIM_Pearson_Correlation,BLOCKDES_Pearson_Correlation,REYCO_Pearson_Correlation, BOSTON1_Pearson_Correlation, FLUEN_Pearson_Correlation, TRAILBS_Pearson_Correlation,SPANSB_Pearson_Correlation, TRAILAS_Pearson_Correlation,SPANSF_Pearson_Correlation, DIGSYMWR_Combo_Pearson_Correlation, TRAILAS_Combo_Pearson_Correlation,SPANSF_Combo_Pearson_Correlation,TRAILBS_Combo_Pearson_Correlation,SPANSB_Combo_Pearson_Correlation)) -->
-<!-- ``` -->
-
-<!-- <div style="margin-bottom:100px;"> -->
-<!-- ``` {r domain_correlation_make_table, echo=FALSE} -->
-<!-- kable(Pearson_Correlation_data, caption = "Pearson Interclass Correlation Values for Cognitive Domains. Measures linear correlation between raw cognitive test scores and the corresponding composite cognitive domain score.", digits = 2) %>% -->
-<!--   kable_styling(bootstrap_options = "striped", full_width = F, position = "left") %>% -->
-<!--   pack_rows("Memory Domain",1,2) %>% -->
-<!--   pack_rows("Visiospatial Domain",3,4) %>% -->
-<!--   pack_rows("Language Domain",5,6) %>% -->
-<!--   pack_rows("Executive Domain",7,8) %>% -->
-<!--   pack_rows("Attention Domain",9,10) %>% -->
-<!--   pack_rows("Executive_Attention Domain",11,15) -->
-<!-- ``` -->
-<!-- </div> -->
 
 **Memory Learning Domain**
 <div style="margin-bottom:100px;">

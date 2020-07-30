@@ -65,7 +65,7 @@ data$Abs_Hippocampus_AI <- abs(data$Hippocampus_AI)
 data$Abs_DLPFC_AI <- abs(data$DLPFC_AI)
 data$LETTER_FLUENCY <- (data$FLUENA + data$FLUENF+ data$FLUENS) / 3
 data$WREC_TOT <- (data$WREC + data$WREC2 + data$WREC3)
-Pred_STRCW <- (data$STRCOL*data$STRWRD) / (data$STRCOL+data$STRWRD)
+Pred_STRCW <- (data$STRCOL*data$STRWRD) / (data$STRCOL+data$STRWRD) #doi: 10.3389/fpsyg.2017.00557 - Stroop Interference Score
 data$STRINTERFERENCE <- data$STRCW - Pred_STRCW
 
 #identifying PiB(+) subjects
@@ -77,6 +77,10 @@ y_r_h <- data$Right_Hippocampus_FWHM[data$PiB_STATUS_CODE == TRUE]
 x_l_d <-data$Left_DLPFC_Activation[data$PiB_STATUS_CODE == TRUE]
 y_l_d <- data$Left_DLPFC_FWHM[data$PiB_STATUS_CODE == TRUE]
 x_r_d <-data$Right_DLPFC_Activation[data$PiB_STATUS_CODE == TRUE]
+
+
+
+
 y_r_d <- data$Right_DLPFC_FWHM[data$PiB_STATUS_CODE == TRUE]
 #visulize data#################################################################
 plot(data$Left_Hippocampus_Activation, data$Left_Hippocampus_FWHM,col="red", pch = 1, xlab="Mean Activation", ylab="FWHM")
@@ -270,14 +274,99 @@ SPANSF_mean <- mean(data$SPANSF, na.rm= TRUE)
 SPANSF_sd <- sd(data$SPANSF, na.rm = TRUE)
 SPANSB_mean <- mean(data$SPANSB,na.rm= TRUE)
 SPANSB_sd <- sd(data$SPANSB, na.rm= TRUE)
-STRCW_mean <- mean(data$STRCW, na.rm= TRUE)
-STRCW_sd <- sd(data$STRCW, na.rm = TRUE)
+STR_INTERFERENCE_mean <- mean(data$STRINTERFERENCE, na.rm= TRUE)
+STR_INTERFERENCE_sd <- sd(data$STRINTERFERENCE, na.rm= TRUE)
 DIGSYMWR_mean <- mean(data$DIGSYMWR,na.rm= TRUE)
 DIGSYMWR_sd <- sd(data$DIGSYMWR,na.rm = TRUE)
 
 #Add Values for each cognitive domain to cohort table!!
 
+# Characterization of Results #####################
+# Raw AI
+mdl_hippocampus_AI <- lm(Hippocampus_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+summary(mdl_hippocampus_AI)
+
+#Activation
+
+mdl_activation_right_hippocampus <- lm(Right_Hippocampus_Activation ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+summary(mdl_activation_right_hippocampus)
+
+mdl_activation_left_hippocampus <- lm(Left_Hippocampus_Activation ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+summary(mdl_activation_left_hippocampus)
+plot(data$PiB_STATUS_CODE, data$Left_Hippocampus_Activation)
+
+# Filtering PiB with Activation
+data_PiB_Positive <- data[which(data$PiBStatus_SUVR_GTM_FS_Global == "pos"),]
+data_PiB_Negative <- data[which(data$PiBStatus_SUVR_GTM_FS_Global == "neg"),]
+
+mdl_activation_right_hippocampus_positive <- lm(Right_Hippocampus_Activation ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_PiB_Positive)
+summary(mdl_activation_right_hippocampus_positive)
+plot(data_PiB_Positive$PiB_SUVR_GTM_FS_Global, data_PiB_Positive$Right_Hippocampus_Activation)
+
+mdl_activation_left_hippocampus_positive <- lm(Left_Hippocampus_Activation ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_PiB_Positive)
+summary(mdl_activation_left_hippocampus_positive)
+plot(data_PiB_Positive$PiB_SUVR_GTM_FS_Global, data_PiB_Positive$Left_Hippocampus_Activation)
+
+mdl_activation_right_hippocampus_negative <- lm(Right_Hippocampus_Activation ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_PiB_Negative)
+summary(mdl_activation_right_hippocampus_negative)
+plot(data_PiB_Negative$PiB_SUVR_GTM_FS_Global, data_PiB_Negative$Right_Hippocampus_Activation)
+
+mdl_activation_left_hippocampus_negative <- lm(Left_Hippocampus_Activation ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_PiB_Negative)
+summary(mdl_activation_left_hippocampus_negative)
+plot(data_PiB_Negative$PiB_SUVR_GTM_FS_Global, data_PiB_Negative$Left_Hippocampus_Activation)
+
+# FWHM and AI
+summary(lm(data$Right_Hippocampus_FWHM ~ data$Abs_Hippocampus_AI))
+plot(data$Abs_Hippocampus_AI, data$Right_Hippocampus_FWHM)
+summary(lm(data$Left_Hippocampus_FWHM ~ data$Abs_Hippocampus_AI ))
+plot(data$Abs_Hippocampus_AI, data$Left_Hippocampus_FWHM)
+
+# AI and FWHM with PiB
+summary(lm(data$Abs_Hippocampus_AI ~ data$PiB_STATUS_CODE))
+summary(lm(data$Left_Hippocampus_FWHM ~ data$PiB_STATUS_CODE))
+summary(lm(data$Right_Hippocampus_FWHM ~ data$PiB_STATUS_CODE))
+plot(data$PiB_STATUS_CODE, data$Abs_Hippocampus_AI)
+plot(data$PiB_STATUS_CODE, data$Left_Hippocampus_FWHM)
+plot(data$PiB_STATUS_CODE, data$Right_Hippocampus_FWHM)
+summary(lm(PiB_STATUS_CODE ~ Abs_Hippocampus_AI + Left_Hippocampus_FWHM, data = data))
+summary(lm(PiB_STATUS_CODE ~ Abs_Hippocampus_AI + Right_Hippocampus_FWHM, data = data))
+
+summary(lm( Left_Hippocampus_FWHM ~ Abs_Hippocampus_AI + PiB_STATUS_CODE, data = data))
+summary(lm( Left_Hippocampus_FWHM ~ Abs_Hippocampus_AI + PiB_STATUS_CODE + PiB_STATUS_CODE*Abs_Hippocampus_AI, data = data))
+summary(lm( Abs_Hippocampus_AI ~ Left_Hippocampus_FWHM + PiB_STATUS_CODE + PiB_STATUS_CODE*Left_Hippocampus_FWHM, data = data))
+
+# PiB and FWHM
+plot(data$PiB_SUVR_GTM_FS_Global, data$Left_Hippocampus_FWHM)
+plot(data$PiB_SUVR_GTM_FS_Global, data$Right_Hippocampus_FWHM)
+
+plot(data$PiB_SUVR_GTM_FS_Global, data$Left_DLPFC_FWHM)
+plot(data$PiB_SUVR_GTM_FS_Global, data$Right_DLPFC_FWHM)
+
+# Activation Regressions - Isolated
+mdl_hippocampus_left_activation <- lm(Left_Hippocampus_Activation ~ PiB_STATUS_CODE, data = data)
+summary(mdl_hippocampus_left_activation)
+plot(data$PiB_SUVR_GTM_FS_Global, data$Left_Hippocampus_Activation)
+plot(data$PiB_STATUS_CODE, data$Left_Hippocampus_Activation)
+
+mdl_hippocampus_right_activation <- lm(Right_Hippocampus_Activation ~ PiB_STATUS_CODE, data = data)
+summary(mdl_hippocampus_right_activation)
+plot(data$PiB_SUVR_GTM_FS_Global, data$Right_Hippocampus_Activation)
+plot(data$PiB_STATUS_CODE, data$Right_Hippocampus_Activation)
+
+#Activation RRegressions with different PiB Classifications
+
+mdl_hippocampus_activations <- lm(Left_Hippocampus_Activation ~ Right_Hippocampus_Activation, data = data)
+summary(mdl_hippocampus_activations)
+plot(data$Left_Hippocampus_Activation, data$Right_Hippocampus_Activation)
+
+plot(data_PiB_Negative$Left_Hippocampus_Activation, data_PiB_Negative$Right_Hippocampus_Activation)
+summary(lm(Right_Hippocampus_Activation ~ Left_Hippocampus_Activation, data = data_PiB_Negative))
+
+plot(data_PiB_Positive$Left_Hippocampus_Activation, data_PiB_Positive$Right_Hippocampus_Activation)
+summary(lm(Right_Hippocampus_Activation ~ Left_Hippocampus_Activation, data = data_PiB_Positive))
 
 
 ################################################################################################################################
 save.image(file = "~/Desktop/RStudio Scripts/KLU_APC2_Data_Analysis_7_22_2020") #path for spreadsheet - saves all variables
+
+
