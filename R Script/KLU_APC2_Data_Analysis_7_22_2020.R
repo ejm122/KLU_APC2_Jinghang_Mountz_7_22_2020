@@ -3,17 +3,17 @@ dev.off()
 pacman::p_load(pacman, rio)
 library(tibble)
 # IMPORTING Data ###########################################################
-data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/KLU_APC2_Master_2020_07_22.xlsx")
-activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
-AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
-FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
-FWHM <- abs(FWHM)
-
-# data <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
-# activation <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
-# AI <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
-# FWHM <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
+# data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/KLU_APC2_Master_2020_07_22.xlsx")
+# activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
+# AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
+# FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
 # FWHM <- abs(FWHM)
+
+data <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
+activation <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
+AI <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
+FWHM <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
+FWHM <- abs(FWHM)
 # Filter Data ##############################################################
 data <- data[is.na(data$FaceNames_Exclude) & data$Visit_Relative == 1,] #Issues with face name data and only 1 scan/subject - 87 observations
 list <- match(activation$Scan_ID,data$Vault_Scan_ID)
@@ -77,24 +77,25 @@ y_r_h <- data$Right_Hippocampus_FWHM[data$PiB_STATUS_CODE == TRUE]
 x_l_d <-data$Left_DLPFC_Activation[data$PiB_STATUS_CODE == TRUE]
 y_l_d <- data$Left_DLPFC_FWHM[data$PiB_STATUS_CODE == TRUE]
 x_r_d <-data$Right_DLPFC_Activation[data$PiB_STATUS_CODE == TRUE]
-
-
-
-
 y_r_d <- data$Right_DLPFC_FWHM[data$PiB_STATUS_CODE == TRUE]
 #visulize data#################################################################
 plot(data$Left_Hippocampus_Activation, data$Left_Hippocampus_FWHM,col="red", pch = 1, xlab="Mean Activation", ylab="FWHM")
 points(data$Right_Hippocampus_Activation, data$Right_Hippocampus_FWHM, pch = 2, col="black")
-points(x_l_h,y_l_h,pch = 4, cex = 2)
-points(x_r_h,y_r_h,pch = 4, cex = 2)
-legend(x=-2.5,y=27,c("Left Hippocampus", "Right Hippocampus", "PiB(+) Subjects"),cex=.8,col=c("red","black","black"),pch=c(1,2,4))
+points(x_l_h,y_l_h,pch = 19, cex = 1)
+points(x_r_h,y_r_h,pch = 17, cex = 1)
+legend(x=-2.5,y=27,c("Left Hippocampus", "Right Hippocampus", "PiB(+) Subjects","PiB(+) Subjects"),cex=.8,col=c("red","black","black","black"),pch=c(1,2,19,17))
 
 plot(data$Left_DLPFC_Activation, data$Left_DLPFC_FWHM,col="blue", pch = 1, xlab="Mean Activation", ylab="FWHM")
 points(data$Right_DLPFC_Activation, data$Right_DLPFC_FWHM, col = "brown", pch =2)
-points(x_l_d,y_l_d,pch = 4, cex = 2)
-points(x_r_d,y_r_d,pch = 4, cex = 2)
-legend(x=-4,y=35,c("Left DLPFC", "Right DLPFC","PiB(+) Subjects"),cex=.8,col=c("blue","brown","black"),pch=c(1,2,4))
+points(x_l_d,y_l_d,pch = 19, cex = 1)
+points(x_r_d,y_r_d,pch = 17, cex = 1)
+legend(x=-4,y=35,c("Left DLPFC", "Right DLPFC","PiB(+) Subjects","PiB(+) Subjects"),cex=.8,col=c("blue","brown","black","black"),pch=c(1,2,19,17))
 
+plot(data$Left_Hippocampus_Activation,data$Right_Hippocampus_Activation, col="black", pch =1, xlab = "Left Hippocampus Mean Activation", ylab = "Right Hippocampus Mean Activation",cex = 1,xlim=c(-3,4), ylim=c(-3,4))
+points(x_l_h, x_r_h,pch = 19, cex = 1, col="red") #hippocampus left and right activation
+
+plot(data$Left_DLPFC_Activation,data$Right_DLPFC_Activation, col="black", pch =1, xlab = "Left DLPFC Mean Activation", ylab = "Right DLPFC Mean Activation",cex = 1,xlim=c(-3,4), ylim=c(-3,4))
+points(x_l_d,x_r_d,pch = 19, cex = 1, col="red") #dlpfc left and right activation
 # Cognitive Domain - Z Transform ####################################################################
 #Negative z value means that lower value = higher performance
 # doi:10.1016/j.jalz.2017.12.003 - method of composite calculation
