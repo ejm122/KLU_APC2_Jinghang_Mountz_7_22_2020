@@ -389,7 +389,7 @@ summary(mdl_hippocampus_right_activation)
 plot(data$PiB_SUVR_GTM_FS_Global, data$Right_Hippocampus_Activation)
 plot(data$PiB_STATUS_CODE, data$Right_Hippocampus_Activation)
 
-#Activation RRegressions with different PiB Classifications
+#Activation Regressions with different PiB Classifications
 
 mdl_hippocampus_activations <- lm(Left_Hippocampus_Activation ~ Right_Hippocampus_Activation, data = data)
 summary(mdl_hippocampus_activations)
@@ -402,6 +402,11 @@ plot(data_PiB_Positive$Left_Hippocampus_Activation, data_PiB_Positive$Right_Hipp
 summary(lm(Right_Hippocampus_Activation ~ Left_Hippocampus_Activation, data = data_PiB_Positive))
 
 
+
+X <- data$Abs_Hippocampus_AI[data$PiB_STATUS_CODE == TRUE]
+Y <- data$Left_Hippocampus_FWHM[data$PiB_STATUS_CODE == TRUE]
+plot(data$Abs_Hippocampus_AI, data$Left_Hippocampus_FWHM)
+points(points(X,Y,pch = 19, cex = 1, col="red"))
 ################################################################################################################################
 save.image(file = "~/Desktop/RStudio Scripts/KLU_APC2_Data_Analysis_7_22_2020") #path for spreadsheet - saves all variables
 
