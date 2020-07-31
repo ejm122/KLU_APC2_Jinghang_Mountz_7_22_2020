@@ -361,6 +361,46 @@ executive_attention_fwhm_df2 <- summary(mdl_executive_attention_fwhm)$fstatistic
 executive_attention_fwhm_pval <- lmp(mdl_executive_attention_fwhm)
 ```
 
+``` {r raw_AI, echo = FALSE}
+mdl_raw_hippocampus_AI <- lm(Hippocampus_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+
+raw_hippocampus_AI_rsquared <- summary(mdl_raw_hippocampus_AI)$r.squared
+raw_hippocampus_AI_fstat <- summary(mdl_raw_hippocampus_AI)$fstatistic[1]
+raw_hippocampus_AI_df1 <- summary(mdl_raw_hippocampus_AI)$fstatistic[2]
+raw_hippocampus_AI_df2 <- summary(mdl_raw_hippocampus_AI)$fstatistic[3]
+raw_hippocampus_AI_pval <- lmp(mdl_raw_hippocampus_AI)
+``` 
+
+``` {r L_Hippocampus_Activation, echo = FALSE}
+mdl_activation_left_hippocampus <- lm(Left_Hippocampus_Activation ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+
+activation_left_hippocampus_rsquared <- summary(mdl_activation_left_hippocampus)$r.squared
+activation_left_hippocampus_fstat <- summary(mdl_activation_left_hippocampus)$fstatistic[1]
+activation_left_hippocampus_df1 <- summary(mdl_activation_left_hippocampus)$fstatistic[2]
+activation_left_hippocampus_df2 <- summary(mdl_activation_left_hippocampus)$fstatistic[3]
+activation_left_hippocampus_pval <- lmp(mdl_activation_left_hippocampus)
+```
+
+``` {r R_Hippocampus_Activation, echo = FALSE}
+mdl_activation_right_hippocampus <- lm(Right_Hippocampus_Activation ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+
+activation_right_hippocampus_rsquared <- summary(mdl_activation_right_hippocampus)$r.squared
+activation_right_hippocampus_fstat <- summary(mdl_activation_right_hippocampus)$fstatistic[1]
+activation_right_hippocampus_df1 <- summary(mdl_activation_right_hippocampus)$fstatistic[2]
+activation_right_hippocampus_df2 <- summary(mdl_activation_right_hippocampus)$fstatistic[3]
+activation_right_hippocampus_pval <- lmp(mdl_activation_right_hippocampus)
+```
+
+``` {r FWHM_AI_Model, echo = FALSE}
+mdl_FWHM_AI <- lm(data$Left_Hippocampus_FWHM ~ data$Abs_Hippocampus_AI)
+
+FWHM_AI_rsquared <- summary(mdl_FWHM_AI)$r.squared
+FWHM_AI_fstat <- summary(mdl_FWHM_AI)$fstatistic[1]
+FWHM_AI_df1 <- summary(mdl_FWHM_AI)$fstatistic[2]
+FWHM_AI_df2 <- summary(mdl_FWHM_AI)$fstatistic[3]
+FWHM_AI_pval <- lmp(mdl_FWHM_AI)
+```
+
 ``` {r modelSetUp, echo = FALSE, include = FALSE}
 if (!require("sjPlot")) install.packages("sjPlot")
 library(sjPlot)
@@ -651,6 +691,69 @@ tab_model(mdl_executive_attention_fwhm, dv.labels = "Executive_Attention",
 ```
 </div>
 
+# Characterization of Results
 
+**Raw Hippocampus Asymmetry**
+<div style="margin-bottom:100px;">
+``` {r raw_hippocampus_AI_data, echo = FALSE}
+raw_hippocampus_AI_data <- data.frame(Variable = c(paste("F( ", raw_hippocampus_AI_df1, ",", raw_hippocampus_AI_df2,")"),"R^2","p-value"),
+                               Value = c(raw_hippocampus_AI_fstat, raw_hippocampus_AI_rsquared, raw_hippocampus_AI_pval))
 
+kable(raw_hippocampus_AI_data, caption = "Raw Hippocampus Asymmetry Summary", digits = 3) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r raw_hippocampus_AI_coefficients, echo = FALSE}
+tab_model(mdl_raw_hippocampus_AI, dv.labels = "Raw Hippocampus Asymmetry",
+          pred.labels = c("Intercept", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+**Left Hippocampus Activation**
+<div style="margin-bottom:100px;">
+``` {r activation_left_hippocampus_data, echo = FALSE}
+activation_left_hippocampus_data <- data.frame(Variable = c(paste("F( ", activation_left_hippocampus_df1, ",", activation_left_hippocampus_df2,")"),"R^2","p-value"),
+                               Value = c(activation_left_hippocampus_fstat, activation_left_hippocampus_rsquared, activation_left_hippocampus_pval))
+
+kable(activation_left_hippocampus_data, caption = "Left Hippocampus Activation Summary", digits = 3) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r activation_left_hippocampus_coefficients, echo = FALSE}
+tab_model(mdl_activation_left_hippocampus, dv.labels = "Left Hippocampus Activation",
+          pred.labels = c("Intercept", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+**Right Hippocampus Activation**
+<div style="margin-bottom:100px;">
+``` {r activation_right_hippocampus_data, echo = FALSE}
+activation_right_hippocampus_data <- data.frame(Variable = c(paste("F( ", activation_right_hippocampus_df1, ",", activation_right_hippocampus_df2,")"),"R^2","p-value"),
+                               Value = c(activation_right_hippocampus_fstat, activation_right_hippocampus_rsquared, activation_right_hippocampus_pval))
+
+kable(activation_right_hippocampus_data, caption = "Right Hippocampus Activation Summary", digits = 3) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r activation_right_hippocampus_coefficients, echo = FALSE}
+tab_model(mdl_activation_right_hippocampus, dv.labels = "Right Hippocampus Activation",
+          pred.labels = c("Intercept", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+**FWHM and AI**
+<div style="margin-bottom:100px;">
+``` {r FWHM_AI_data, echo = FALSE}
+FWHM_AI_data <- data.frame(Variable = c(paste("F( ", FWHM_AI_df1, ",", FWHM_AI_df2,")"),"R^2","p-value"),
+                               Value = c(FWHM_AI_fstat, FWHM_AI_rsquared, FWHM_AI_pval))
+
+kable(FWHM_AI_data, caption = "FWHM and AI Summary", digits = 3) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+``` {r FWHM_AI_coefficients, echo = FALSE}
+tab_model(mdl_FWHM_AI, dv.labels = "FWHM and AI",
+          pred.labels = c("Intercept", "Absolute Hippocampus AI"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
 

@@ -283,7 +283,7 @@ DIGSYMWR_sd <- sd(data$DIGSYMWR,na.rm = TRUE)
 
 # Characterization of Results #####################
 # Raw AI
-mdl_hippocampus_AI <- lm(Hippocampus_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+mdl_raw_hippocampus_AI <- lm(Hippocampus_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_hippocampus_AI)
 
 #Activation
@@ -315,11 +315,22 @@ mdl_activation_left_hippocampus_negative <- lm(Left_Hippocampus_Activation ~ Age
 summary(mdl_activation_left_hippocampus_negative)
 plot(data_PiB_Negative$PiB_SUVR_GTM_FS_Global, data_PiB_Negative$Left_Hippocampus_Activation)
 
+mdl_right_left_activation_positive <- lm(Left_Hippocampus_Activation ~ Right_Hippocampus_Activation, data = data_PiB_Positive)
+mdl_right_left_activation_negative <- lm(Left_Hippocampus_Activation ~ Right_Hippocampus_Activation, data = data_PiB_Negative)
+plot(data$Left_Hippocampus_Activation,data$Right_Hippocampus_Activation, col="black", pch =1, xlab = "Left Hippocampus Mean Activation", ylab = "Right Hippocampus Mean Activation",cex = 1, xlim=c(-3,4), ylim=c(-3,4))
+points(x_l_d,x_r_d,pch = 19, cex = 1, col="red") #hippocampus left and right activation
+abline(mdl_right_left_activation_positive, col = "red")
+abline(mdl_right_left_activation_negative)
+
+
 # FWHM and AI
 summary(lm(data$Right_Hippocampus_FWHM ~ data$Abs_Hippocampus_AI))
-plot(data$Abs_Hippocampus_AI, data$Right_Hippocampus_FWHM)
-summary(lm(data$Left_Hippocampus_FWHM ~ data$Abs_Hippocampus_AI ))
-plot(data$Abs_Hippocampus_AI, data$Left_Hippocampus_FWHM)
+plot(data$Abs_Hippocampus_AI, data$Right_Hippocampus_FWHM,  col="black", pch =1, xlab = "Absolute Hippocampus AI", ylab = "Right Hippocampus FWHM",cex = 1)
+mdl_FWHM_AI <- lm(data$Left_Hippocampus_FWHM ~ data$Abs_Hippocampus_AI)
+summary(mdl_FWHM_AI)
+plot(data$Abs_Hippocampus_AI, data$Left_Hippocampus_FWHM, type = "p", col="black", pch =1, xlab = "Absolute Hippocampus AI", ylab = "Left Hippocampus FWHM",cex = 1)
+abline(mdl_FWHM_AI)
+
 
 # AI and FWHM with PiB
 summary(lm(data$Abs_Hippocampus_AI ~ data$PiB_STATUS_CODE))
