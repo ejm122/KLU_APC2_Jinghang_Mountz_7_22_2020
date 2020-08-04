@@ -107,40 +107,6 @@ legend(-3,4, legend = c("PiB Negative", "PiB Positive"), col = c("black","red"),
 
 plot(data$Left_DLPFC_Activation,data$Right_DLPFC_Activation, col="black", pch =1, xlab = "Left DLPFC Mean Activation", ylab = "Right DLPFC Mean Activation",cex = 1,xlim=c(-3,4), ylim=c(-3,4))
 points(x_l_d,x_r_d,pch = 19, cex = 1, col="red") #dlpfc left and right activation
-
-#Violin Plots####################################
-# Violin plots
-library(ggplot2)
-vplot_data <- data.frame("PiB" = data$PiB_STATUS_CODE, "Left Hippocampus FWHM" = data$Left_Hippocampus_FWHM,
-                         "Left Hippocampus Activation" = data$Left_Hippocampus_Activation, "Right Hippocampus Activation" = data$Right_Hippocampus_Activation, 
-                         "Abs Hippocampus AI" = data$Abs_Hippocampus_AI)
-# vplot_data <- data.frame("PiB" = na.omit(data$PiB_STATUS_CODE), "Left Hippocampus FWHM" = data$Left_Hippocampus_FWHM[(!is.na(data$PiB_STATUS_CODE))])
-# vplot_data <- data.frame("PiB" = data$PiB_STATUS_CODE, "Left Hippocampus FWHM" = data$Left_Hippocampus_FWHM)
-#creating violin plot
-vplot_data$PiB <- as.factor(vplot_data$PiB)
-
-L_Hippocampus_FWHM_violin <- ggplot(vplot_data, aes(x=PiB, y=Left.Hippocampus.FWHM, fill = PiB)) + geom_violin(trim=FALSE) + 
-  labs(title="Left Hippocampus Full Width Half Maximum",x="Left Hippocampus FWHM", y = "PiB Status")
-
-L_Hippocampus_activation_violin <- ggplot(vplot_data, aes(x=PiB, y=Left.Hippocampus.Activation, 
-                                                          mainTitle="Left Hippocampus Activation", fill = PiB)) + geom_violin(trim=FALSE)
-R_Hippocampus_activation_violin <- ggplot(vplot_data, aes(x=PiB, y=Right.Hippocampus.Activation, 
-                                                          mainTitle="Right Hippocampus Activation", fill = PiB)) + geom_violin(trim=FALSE)
-abs_hippocampus_AI_violin  <- ggplot(vplot_data, aes(x=PiB, y=Abs.Hippocampus.AI, 
-                                                     mainTitle="Absolute Hippocampus Mean Activation Asymmetry", fill = PiB)) + geom_violin(trim=FALSE)
-# Function to produce summary statistics (mean and +/- sd)
-data_summary <- function(x) {
-  m <- mean(x)
-  ymin <- m-sd(x)
-  ymax <- m+sd(x)
-  return(c(y=m,ymin=ymin,ymax=ymax))
-}
-
-#showing violin plots left hippocampus fwhm
-L_Hippocampus_FWHM_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") + theme_classic()
-L_Hippocampus_activation_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") 
-R_Hippocampus_activation_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") 
-abs_hippocampus_AI_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") 
 # Cognitive Domain - Z Transform ####################################################################
 #Negative z value means that lower value = higher performance
 # doi:10.1016/j.jalz.2017.12.003 - method of composite calculation
@@ -173,7 +139,44 @@ data$memory_retrieval <- (LMIIADEL_Z + REYDE_Z + WRECDE_Z) / 3
 data$visuospatial <- (BLOCKDES_Z + REYCO_Z) / 2
 data$language <- (FLUEN_Z + LETTER_FLUENCY_Z + BNT60TOT_Z) / 3
 data$executive_attention <- (TRAILAS_Z_INV + TRAILBS_Z_INV + CLOCKD_Z + DIGSYMWR_Z + STRINTERFERENCE_Z + SPANSF_Z + SPANSB_Z) / 7
+#Violin Plots####################################
+# Violin plots
+library(ggplot2)
+vplot_data <- data.frame("PiB" = data$PiB_STATUS_CODE, "Left Hippocampus FWHM" = data$Left_Hippocampus_FWHM,
+                         "Left Hippocampus Activation" = data$Left_Hippocampus_Activation, "Right Hippocampus Activation" = data$Right_Hippocampus_Activation, 
+                         "Abs Hippocampus AI" = data$Abs_Hippocampus_AI, "Executive_Attention" = data$executive_attention, "Memory_Learning" = data$memory_learning,
+                         "Memory_Retrieval" = data$memory_retrieval, "Visuospatial" = data$visuospatial, "Language" = data$language)
 
+# vplot_data <- data.frame("PiB" = na.omit(data$PiB_STATUS_CODE), "Left Hippocampus FWHM" = data$Left_Hippocampus_FWHM[(!is.na(data$PiB_STATUS_CODE))])
+# vplot_data <- data.frame("PiB" = data$PiB_STATUS_CODE, "Left Hippocampus FWHM" = data$Left_Hippocampus_FWHM)
+#creating violin plot
+vplot_data$PiB <- as.factor(vplot_data$PiB)
+
+L_Hippocampus_FWHM_violin <- ggplot(vplot_data, aes(x=PiB, y=Left.Hippocampus.FWHM, fill = PiB)) + geom_violin(trim=FALSE) + 
+  labs(title="Left Hippocampus Full Width Half Maximum",x="Left Hippocampus FWHM", y = "PiB Status")
+
+L_Hippocampus_activation_violin <- ggplot(vplot_data, aes(x=PiB, y=Left.Hippocampus.Activation, 
+                                                          mainTitle="Left Hippocampus Activation", fill = PiB)) + geom_violin(trim=FALSE)
+R_Hippocampus_activation_violin <- ggplot(vplot_data, aes(x=PiB, y=Right.Hippocampus.Activation, 
+                                                          mainTitle="Right Hippocampus Activation", fill = PiB)) + geom_violin(trim=FALSE)
+abs_hippocampus_AI_violin  <- ggplot(vplot_data, aes(x=PiB, y=Abs.Hippocampus.AI, 
+                                                     mainTitle="Absolute Hippocampus Mean Activation Asymmetry", fill = PiB)) + geom_violin(trim=FALSE)
+Executive_Attention_violin  <- ggplot(vplot_data, aes(x=PiB, y=Executive_Attention, 
+                                                     mainTitle="Executive_Attention", fill = PiB)) + geom_violin(trim=FALSE)
+# Function to produce summary statistics (mean and +/- sd)
+data_summary <- function(x) {
+  m <- mean(x)
+  ymin <- m-sd(x)
+  ymax <- m+sd(x)
+  return(c(y=m,ymin=ymin,ymax=ymax))
+}
+
+#showing violin plots
+L_Hippocampus_FWHM_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") + theme_classic()
+L_Hippocampus_activation_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") 
+R_Hippocampus_activation_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") 
+abs_hippocampus_AI_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") 
+Executive_Attention_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") 
 #Intraclass Correlation ################################################################
 # Pearson (Linear Correlation between composite and raw scores)
 library("irr")
@@ -410,7 +413,7 @@ summary(mdl_hippocampus_right_activation)
 plot(data$PiB_SUVR_GTM_FS_Global, data$Right_Hippocampus_Activation)
 plot(data$PiB_STATUS_CODE, data$Right_Hippocampus_Activation)
 
-#Activation RRegressions with different PiB Classifications
+#Activation Regressions with different PiB Classifications
 
 mdl_hippocampus_activations <- lm(Left_Hippocampus_Activation ~ Right_Hippocampus_Activation, data = data)
 summary(mdl_hippocampus_activations)
@@ -423,6 +426,13 @@ plot(data_PiB_Positive$Left_Hippocampus_Activation, data_PiB_Positive$Right_Hipp
 summary(lm(Right_Hippocampus_Activation ~ Left_Hippocampus_Activation, data = data_PiB_Positive))
 
 
+mdl <- lm(Abs_Hippocampus_AI ~ Left_Hippocampus_FWHM,data = data)
+summary(mdl)
+X <- data$Abs_Hippocampus_AI[data$PiB_STATUS_CODE == TRUE]
+Y <- data$Left_Hippocampus_FWHM[data$PiB_STATUS_CODE == TRUE]
+plot(data$Abs_Hippocampus_AI, data$Left_Hippocampus_FWHM)
+points(points(X,Y,pch = 19, cex = 1, col="red"))
+abline(mdl,col="blue")
 ################################################################################################################################
 save.image(file = "~/Desktop/RStudio Scripts/KLU_APC2_Data_Analysis_7_22_2020") #path for spreadsheet - saves all variables
 
