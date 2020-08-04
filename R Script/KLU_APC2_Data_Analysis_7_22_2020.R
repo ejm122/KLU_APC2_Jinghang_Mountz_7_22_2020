@@ -4,17 +4,17 @@ pacman::p_load(pacman, rio)
 library(tibble)
 library(ggplot2)
 # IMPORTING Data ###########################################################
-# data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/KLU_APC2_Master_2020_07_22.xlsx")
-# activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
-# AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
-# FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
-# FWHM <- abs(FWHM)
-
-data <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
-activation <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
-AI <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
-FWHM <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
+data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/KLU_APC2_Master_2020_07_22.xlsx")
+activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
+AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
+FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
 FWHM <- abs(FWHM)
+
+# data <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
+# activation <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
+# AI <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
+# FWHM <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
+# FWHM <- abs(FWHM)
 # Filter Data ##############################################################
 data <- data[is.na(data$FaceNames_Exclude) & data$Visit_Relative == 1,] #Issues with face name data and only 1 scan/subject - 87 observations
 list <- match(activation$Scan_ID,data$Vault_Scan_ID)
@@ -94,6 +94,16 @@ legend(x=-4,y=35,c("Left DLPFC", "Right DLPFC","PiB(+) Subjects","PiB(+) Subject
 
 plot(data$Left_Hippocampus_Activation,data$Right_Hippocampus_Activation, col="black", pch =1, xlab = "Left Hippocampus Mean Activation", ylab = "Right Hippocampus Mean Activation",cex = 1,xlim=c(-3,4), ylim=c(-3,4))
 points(x_l_h, x_r_h,pch = 19, cex = 1, col="red") #hippocampus left and right activation
+data_PiB_Positive <- data[which(data$PiBStatus_SUVR_GTM_FS_Global == "pos"),]
+data_PiB_Negative <- data[which(data$PiBStatus_SUVR_GTM_FS_Global == "neg"),]
+mdl_right_left_activation_positive <- lm(lm(Right_Hippocampus_Activation ~ Left_Hippocampus_Activation, data = data_PiB_Positive))
+summary(mdl_right_left_activation_positive)
+mdl_right_left_activation_negative <- lm(lm(Right_Hippocampus_Activation ~ Left_Hippocampus_Activation, data = data_PiB_Negative))
+summary(mdl_right_left_activation_negative)
+abline(mdl_right_left_activation_positive, col = "red")
+abline(mdl_right_left_activation_negative)
+legend(-3,4, legend = c("PiB Negative", "PiB Positive"), col = c("black","red"), lty = 1, cex = 0.8)
+
 
 plot(data$Left_DLPFC_Activation,data$Right_DLPFC_Activation, col="black", pch =1, xlab = "Left DLPFC Mean Activation", ylab = "Right DLPFC Mean Activation",cex = 1,xlim=c(-3,4), ylim=c(-3,4))
 points(x_l_d,x_r_d,pch = 19, cex = 1, col="red") #dlpfc left and right activation
