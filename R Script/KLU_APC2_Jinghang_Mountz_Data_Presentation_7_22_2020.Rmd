@@ -391,6 +391,26 @@ activation_right_hippocampus_df2 <- summary(mdl_activation_right_hippocampus)$fs
 activation_right_hippocampus_pval <- lmp(mdl_activation_right_hippocampus)
 ```
 
+``` {r L_DLPFC_Activation, echo = FALSE}
+mdl_activation_left_DLPFC <- lm(Left_DLPFC_Activation ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+
+activation_left_DLPFC_rsquared <- summary(mdl_activation_left_DLPFC)$r.squared
+activation_left_DLPFC_fstat <- summary(mdl_activation_left_DLPFC)$fstatistic[1]
+activation_left_DLPFC_df1 <- summary(mdl_activation_left_DLPFC)$fstatistic[2]
+activation_left_DLPFC_df2 <- summary(mdl_activation_left_DLPFC)$fstatistic[3]
+activation_left_DLPFC_pval <- lmp(mdl_activation_left_DLPFC)
+```
+
+``` {r R_DLPFC_Activation, echo = FALSE}
+mdl_activation_right_DLPFC <- lm(Right_DLPFC_Activation ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+
+activation_right_DLPFC_rsquared <- summary(mdl_activation_right_DLPFC)$r.squared
+activation_right_DLPFC_fstat <- summary(mdl_activation_right_DLPFC)$fstatistic[1]
+activation_right_DLPFC_df1 <- summary(mdl_activation_right_DLPFC)$fstatistic[2]
+activation_right_DLPFC_df2 <- summary(mdl_activation_right_DLPFC)$fstatistic[3]
+activation_right_DLPFC_pval <- lmp(mdl_activation_right_DLPFC)
+```
+
 ``` {r FWHM_AI_Model, echo = FALSE}
 mdl_FWHM_AI <- lm(data$Left_Hippocampus_FWHM ~ data$Abs_Hippocampus_AI)
 
@@ -709,8 +729,16 @@ tab_model(mdl_raw_hippocampus_AI, dv.labels = "Raw Hippocampus Asymmetry",
 ```
 </div>
 
-**Left Hippocampus Activation**
+**Activation Relationships**
 <div style="margin-bottom:100px;">
+``` {r activation_coefficients, echo = FALSE}
+tab_model(mdl_activation_left_hippocampus,mdl_activation_right_hippocampus,mdl_activation_left_DLPFC, mdl_activation_right_DLPFC, dv.labels = c("Left Hippocampus Activation", "Right Hippocampus Activation","Left DLPFC Activation", "Right DLPFC Activation"),
+          pred.labels = c("Intercept", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+**Left Hippocampus Activation Summary**
+<div style = "margin-bottom:100px;">
 ``` {r activation_left_hippocampus_data, echo = FALSE}
 activation_left_hippocampus_data <- data.frame(Variable = c(paste("F( ", activation_left_hippocampus_df1, ",", activation_left_hippocampus_df2,")"),"R^2","p-value"),
                                Value = c(activation_left_hippocampus_fstat, activation_left_hippocampus_rsquared, activation_left_hippocampus_pval))
@@ -718,14 +746,9 @@ activation_left_hippocampus_data <- data.frame(Variable = c(paste("F( ", activat
 kable(activation_left_hippocampus_data, caption = "Left Hippocampus Activation Summary", digits = 3) %>%
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
 ```
-
-``` {r activation_left_hippocampus_coefficients, echo = FALSE}
-tab_model(mdl_activation_left_hippocampus, dv.labels = "Left Hippocampus Activation",
-          pred.labels = c("Intercept", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
-```
 </div>
 
-**Right Hippocampus Activation**
+**Right Hippocampus Activation Summary**
 <div style="margin-bottom:100px;">
 ``` {r activation_right_hippocampus_data, echo = FALSE}
 activation_right_hippocampus_data <- data.frame(Variable = c(paste("F( ", activation_right_hippocampus_df1, ",", activation_right_hippocampus_df2,")"),"R^2","p-value"),
@@ -734,12 +757,30 @@ activation_right_hippocampus_data <- data.frame(Variable = c(paste("F( ", activa
 kable(activation_right_hippocampus_data, caption = "Right Hippocampus Activation Summary", digits = 3) %>%
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
 ```
+</div>
 
-``` {r activation_right_hippocampus_coefficients, echo = FALSE}
-tab_model(mdl_activation_right_hippocampus, dv.labels = "Right Hippocampus Activation",
-          pred.labels = c("Intercept", "Age at Visit", "Sex",  "Race","Education (years)", "FDG Global", "PiB Global Status", "APOE Status"), show.r2 = FALSE, show.ci = FALSE)
+**Right DLPFC Activation Summary**
+<div style="margin-bottom:100px;">
+``` {r activation_right_DLPFC_data, echo = FALSE}
+activation_right_DLPFC_data <- data.frame(Variable = c(paste("F( ", activation_right_DLPFC_df1, ",", activation_right_DLPFC_df2,")"),"R^2","p-value"),
+                               Value = c(activation_right_DLPFC_fstat, activation_right_DLPFC_rsquared, activation_right_DLPFC_pval))
+
+kable(activation_right_DLPFC_data, caption = "Right DLPFC Activation Summary", digits = 3) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
 ```
 </div>
+
+**Left DLPFC Activation Summary**
+<div style="margin-bottom:100px;">
+``` {r activation_left_DLPFC_data, echo = FALSE}
+activation_left_DLPFC_data <- data.frame(Variable = c(paste("F( ", activation_left_DLPFC_df1, ",", activation_left_DLPFC_df2,")"),"R^2","p-value"),
+                               Value = c(activation_left_DLPFC_fstat, activation_left_DLPFC_rsquared, activation_left_DLPFC_pval))
+
+kable(activation_left_DLPFC_data, caption = "Left DLPFC Activation Summary", digits = 3) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+</div>
+
 
 **FWHM and AI**
 <div style="margin-bottom:100px;">
@@ -754,6 +795,20 @@ kable(FWHM_AI_data, caption = "FWHM and AI Summary", digits = 3) %>%
 ``` {r FWHM_AI_coefficients, echo = FALSE}
 tab_model(mdl_FWHM_AI, dv.labels = "FWHM and AI",
           pred.labels = c("Intercept", "Absolute Hippocampus AI"), show.r2 = FALSE, show.ci = FALSE)
+```
+</div>
+
+**Left Hippocampus Activation Vs. Right Hippocampus Activation**
+
+<div style="margin-bottom:100px;">
+``` {r PiB_Positive_Negative_Activations, echo = FALSE}
+data_PiB_Positive <- data[which(data$PiBStatus_SUVR_GTM_FS_Global == "pos"),]
+data_PiB_Negative <- data[which(data$PiBStatus_SUVR_GTM_FS_Global == "neg"),]
+mdl_right_left_activation_positive <- lm(lm(Right_Hippocampus_Activation ~ Left_Hippocampus_Activation, data = data_PiB_Positive))
+mdl_right_left_activation_negative <- lm(lm(Right_Hippocampus_Activation ~ Left_Hippocampus_Activation, data = data_PiB_Negative))
+
+tab_model(mdl_right_left_activation_positive, mdl_right_left_activation_negative, dv.labels = c("PiB Positive", "PiB Negative"),
+          pred.labels = c("Intercept", "Left Hippocampus Activation"), show.r2 = TRUE, show.ci = FALSE)
 ```
 </div>
 
