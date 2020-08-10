@@ -173,10 +173,11 @@ data_summary <- function(x) {
 
 #showing violin plots
 L_Hippocampus_FWHM_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") + theme_classic()
-L_Hippocampus_activation_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") 
-R_Hippocampus_activation_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") 
-abs_hippocampus_AI_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") 
-Executive_Attention_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") 
+L_Hippocampus_activation_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") + theme_classic()
+R_Hippocampus_activation_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") + theme_classic()
+abs_hippocampus_AI_violin + geom_dotplot(binaxis='y', stackdir='center',
+                                         position=position_dodge(1)) + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") + theme_classic()
+Executive_Attention_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2") + theme_classic()
 #Intraclass Correlation ################################################################
 # Pearson (Linear Correlation between composite and raw scores)
 library("irr")
@@ -431,7 +432,7 @@ summary(mdl)
 X <- data$Abs_Hippocampus_AI[data$PiB_STATUS_CODE == TRUE]
 Y <- data$Left_Hippocampus_FWHM[data$PiB_STATUS_CODE == TRUE]
 plot(data$Abs_Hippocampus_AI, data$Left_Hippocampus_FWHM)
-points(points(X,Y,pch = 19, cex = 1, col="red"))
+points(X,Y,pch = 19, cex = 1, col="red")
 abline(mdl,col="blue")
 ################################################################################################################################
 save.image(file = "~/Desktop/RStudio Scripts/KLU_APC2_Data_Analysis_7_22_2020") #path for spreadsheet - saves all variables
