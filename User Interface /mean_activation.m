@@ -1,7 +1,7 @@
 %%This function takes in study's fMRI directory, ROI directory, ROI name
 %and subject file. Then the function outputs mean activation for the
-%subejcts at ROIs as well as the asymmetry index values. Make sure you
-%have AI.m and subject csv file in your current directory before running.
+%subejcts at ROI.
+%Make sure you have AI.m and subject csv file in your current directory before running.
 %Additionally, the code will check whether the fRMI file exists in
 %the server.
 % - Jinghang Li (jil202@pitt.edu) June 25th, 2020

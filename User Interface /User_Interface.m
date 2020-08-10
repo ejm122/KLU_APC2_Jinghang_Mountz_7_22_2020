@@ -1,5 +1,5 @@
 %% Userinterface script for creating mean activation tables (mean_activation.m), asymmetry tables based on mean activation (AI.m), and FWHM calculations (ImgAI3.m)
-%Run with functions: activ_table5.m, AI.m, ImgAI3.m
+%Run with functions: mean_activation.m, AI.m, ImgAI3.m
 %Specifics for our project: (enter in commmand window before running script)
 %X = '/Volumes/cerebro/Studies/KLU_APC2/Public/Analysis/data/';
 %XX = '/step03_FaceNames/FirstLevel/con_0003.nii';
@@ -7,6 +7,7 @@
 %ROI = {'rHippocampus_L_37.nii','rHippocampus_R_38.nii','LeftBA46.img','RightBA46.img'};
 
 %Elizabeth Mountz - ejm122@pitt.edu
+%Last Updated: 8/5/2020
 
 %% Gather Directory Input:
 X = input('Please enter the directory path preceding the subject id number, starting and ending with the file separation character');
