@@ -4,17 +4,17 @@ pacman::p_load(pacman, rio)
 library(tibble)
 library(ggplot2)
 # IMPORTING Data ###########################################################
-# data <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/KLU_APC2_Master_2020_07_22.xlsx")
-# activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
-# AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
-# FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
-# FWHM <- abs(FWHM)
-
-data <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
-activation <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
-AI <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
-FWHM <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
+data <- import("~/Desktop/GPN/KLU_APC2_Master_2020_07_22.xlsx")
+activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
+AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
+FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
 FWHM <- abs(FWHM)
+
+# data <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/KLU_APC2_Master_2020_07_22.xlsx")
+# activation <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
+# AI <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
+# FWHM <- import("/Users/jinghangli/Documents/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
+# FWHM <- abs(FWHM)
 # Filter Data ##############################################################
 data <- data[is.na(data$FaceNames_Exclude) & data$Visit_Relative == 1,] #Issues with face name data and only 1 scan/subject - 87 observations
 list <- match(activation$Scan_ID,data$Vault_Scan_ID)
@@ -148,14 +148,14 @@ vplot_data <- data.frame("PiB" = data$PiBStatus_SUVR_GTM_FS_Global, "Left Hippoc
 vplot_data$PiB <- as.factor(vplot_data$PiB)
 
 L_Hippocampus_FWHM_violin <- ggplot(data = vplot_data, aes(x=PiB, y=Left.Hippocampus.FWHM, fill = PiB)) + geom_violin(trim=FALSE) +
-  labs(title="a. Left Hippocampus Activation Spread", x="Aβ Status", y = "Full Width Half Maximum")
+  labs(title="b. Left Hippocampus Activation Spread", x="Aβ Status", y = "Full Width Half Maximum")
 
 L_Hippocampus_activation_violin <- ggplot(vplot_data, aes(x=PiB, y=Left.Hippocampus.Activation,
                                                           mainTitle="Left Hippocampus Activation", fill = PiB)) + geom_violin(trim=FALSE)
 R_Hippocampus_activation_violin <- ggplot(vplot_data, aes(x=PiB, y=Right.Hippocampus.Activation,
                                                           mainTitle="Right Hippocampus Activation", fill = PiB)) + geom_violin(trim=FALSE)
 abs_hippocampus_AI_violin  <- ggplot(vplot_data, aes(x=PiB, y=Abs.Hippocampus.AI, fill = PiB)) + geom_violin(trim=FALSE)+
-  labs(title = "b. Absolute Hippocampus Activation AI", x = "Aβ Status", y = "Absolute Asymmetry Index")
+  labs(title = "a. Absolute Hippocampus Activation AI", x = "Aβ Status", y = "Absolute Asymmetry Index")
 
 Executive_Attention_violin  <- ggplot(vplot_data, aes(x=PiB, y=Executive_Attention, fill = PiB)) + geom_violin(trim=FALSE)+
   labs(title = "c. Executive/Attention Cognitive Function",x = "Aβ Status", y = "Cognitive Composite Score")
@@ -168,8 +168,8 @@ data_summary <- function(x) {
 }
 
 #showing violin plots
-L_Hippocampus_FWHM_violin + geom_dotplot(binaxis='y', stackdir='center', dotsize=0.9) + stat_summary(fun.data=data_summary, color = "black") + scale_x_discrete(limits=c("neg", "pos")) + theme(title=element_text(size=24), axis.text.x=element_text(size=30),axis.title=element_text(size=30),legend.position = 'none')
-abs_hippocampus_AI_violin + stat_summary(fun.data=data_summary, color = "black") + geom_dotplot(binaxis='y', stackdir='center', dotsize=1.6) + scale_x_discrete(limits=c("neg", "pos")) + theme(title=element_text(size=24),axis.text.x=element_text(size=30), axis.title=element_text(size=30),legend.position = 'none')
+L_Hippocampus_FWHM_violin + geom_dotplot(binaxis='y', stackdir='center', dotsize=0.9) + stat_summary(fun.data=data_summary, color = "black") + scale_x_discrete(limits=c("neg", "pos")) + theme(title=element_text(size=18), axis.text.x=element_text(size=18),axis.title=element_text(size=18),legend.position = 'none')
+abs_hippocampus_AI_violin + stat_summary(fun.data=data_summary, color = "black") + geom_dotplot(binaxis='y', stackdir='center', dotsize=1.6) + scale_x_discrete(limits=c("neg", "pos")) + theme(title=element_text(size=18),axis.text.x=element_text(size=18), axis.title=element_text(size=18),legend.position = 'none')
 Executive_Attention_violin + stat_summary(fun.data=data_summary, color = "black") + geom_dotplot(binaxis='y', stackdir='center', dotsize=1) + scale_x_discrete(limits=c("neg", "pos")) + theme(legend.title=element_text(size=30),legend.text=element_text(size=30),title=element_text(size=20), axis.text.x=element_text(size=30), axis.title=element_text(size=30))
 L_Hippocampus_activation_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2")
 R_Hippocampus_activation_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2")
