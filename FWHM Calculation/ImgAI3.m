@@ -86,7 +86,9 @@ fprintf('Dilating anchor matrix for all subjects at all ROIs......\n')
 fprintf('Computing activation mean within the dilated spheres at all ROIs......\n')
 fprintf('This may take a couple of minutes. Take a break and come back later.........\n')
 for i = 1:length(mri) %looping through all the subject's existed fMRI files
-    i %counter to see the imdilating progress
+    fprintf('\n Current Progress.......\n') %counter to see the imdilating progress
+    txt = [num2str(i), '/', num2str(length(mri))];
+    fprintf(txt)
     for j = 1:length(ROI_mask) %looping through specified region of interest
 dilated = imdilate(anchor{i,j},strel('sphere',1)); %dilate all the anchors first
 for r = 1:R %additional dilating each anchor (outer ring dilation to save computational resources)
