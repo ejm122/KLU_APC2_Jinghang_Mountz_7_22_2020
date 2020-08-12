@@ -38,8 +38,7 @@ for i =1:length(mri_dir(:,1))
 mri(i) = dir(mri_dir(i,:));
 end
 mri(all(cell2mat(arrayfun(@(x) structfun(@isempty, x), mri, 'UniformOutput', false)),1)) = []; % remove the empty rows in the struct
-
-path =[filesep 'Volumes',filesep,'tubby',filesep,'Processing',filesep,'Scripts',filesep,'GPN_Toolbox'];
+path =[filesep 'Volumes',filesep,'tubby',filesep,'_movedtocerebro',filesep,'Processing',filesep,'Scripts',filesep,'GPN_Toolbox'];
 cd (path)
 addpath(genpath(['Volumes',filesep,'tubby',filesep,'Processing',filesep,'Scripts',filesep,'GPN_Toolbox']))
 mean_activ = zeros(length(mri), length(ROI)+2); %900#; 800#; MeanActivation_L_hippo; MeanActivation_R_hippo; L_dLPFC; R_dLPFC
