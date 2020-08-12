@@ -38,7 +38,7 @@ for i =1:length(mri_dir(:,1))
 mri(i) = dir(mri_dir(i,:)); %getting dir for the fMRI files
 end
 mri(all(cell2mat(arrayfun(@(x) structfun(@isempty, x), mri, 'UniformOutput', false)),1)) = []; % remove the empty rows in the struct
-path =[filesep 'Volumes',filesep,'tubby',filesep,'Processing',filesep,'Scripts',filesep,'GPN_Toolbox']; %specifying path for matlab toolbox
+path =[filesep 'Volumes',filesep,'tubby',filesep,'_movedtocerebro',filesep,'Processing',filesep,'Scripts',filesep,'GPN_Toolbox'];
 cd (path)
 addpath(genpath(['Volumes',filesep,'tubby',filesep,'Processing',filesep,'Scripts',filesep,'GPN_Toolbox']))
 %% Reading fMRI images
