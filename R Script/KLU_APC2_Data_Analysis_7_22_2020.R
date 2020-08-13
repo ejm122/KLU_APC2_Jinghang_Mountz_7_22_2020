@@ -4,7 +4,7 @@ pacman::p_load(pacman, rio)
 library(tibble)
 library(ggplot2)
 # IMPORTING Data ###########################################################
-data <- import("~/Desktop/GPN/KLU_APC2_Master_2020_07_22.xlsx")
+data <- import("~/Desktop/GPN/KLU_APC2_Master_2020_07_24_AS")
 activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
 AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
 FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
@@ -53,7 +53,7 @@ data$Right_DLPFC_FWHM[list] <- FWHM[,6][index]
 # Recode Variables ##############################################################
 data$Race[data$Race == "NaN"] = NA
 data$Race_cat <- data$Race != 'White' #non-white = TRUE
-data$Education_cat <- data$Education > 12  #higher education = True
+#Education_cat <- data$Education > 12  #higher education = True
 data$Sex[data$Sex == "NaN"] = NA
 data$Sex_cat <- (data$Sex == 'Male') #TRUE = male
 data$PiBStatus_SUVR_GTM_FS_Global[data$PiBStatus_SUVR_GTM_FS_Global == "NaN"] = NA
@@ -68,6 +68,11 @@ data$LETTER_FLUENCY <- (data$FLUENA + data$FLUENF+ data$FLUENS) / 3
 data$WREC_TOT <- (data$WREC + data$WREC2 + data$WREC3)
 Pred_STRCW <- (data$STRCOL*data$STRWRD) / (data$STRCOL+data$STRWRD) #doi: 10.3389/fpsyg.2017.00557 - Stroop Interference Score
 data$STRINTERFERENCE <- data$STRCW - Pred_STRCW
+data$PiB_Transform <- -1 / log(data$PiB_SUVR_GTM_FS_Global)
+
+#Filter for only con_0003 > 0 in both ROIs:
+# data1 <- data[which(data$Left_Hippocampus_Activation > 0 & data$Right_Hippocampus_Activation > 0),]
+# data2 <- data[which(data$Left_DLPFC_Activation > 0 & data$Right_DLPFC_Activation > 0),]
 
 #identifying PiB(+) subjects
 x_l_h <- data$Left_Hippocampus_Activation[data$PiB_STATUS_CODE == TRUE]
@@ -145,7 +150,7 @@ vplot_data <- data.frame("PiB" = data$PiBStatus_SUVR_GTM_FS_Global, "Left Hippoc
                          "Abs Hippocampus AI" = data$Abs_Hippocampus_AI, "Executive_Attention" = data$executive_attention, "Memory_Learning" = data$memory_learning,
                          "Memory_Retrieval" = data$memory_retrieval, "Visuospatial" = data$visuospatial, "Language" = data$language)
 #creating violin plot
-vplot_data$PiB <- as.factor(vplot_data$PiB)
+vplot_data$PiB <- as.factor(vplot_data$Education_cat)
 
 L_Hippocampus_FWHM_violin <- ggplot(data = vplot_data, aes(x=PiB, y=Left.Hippocampus.FWHM, fill = PiB)) + geom_violin(trim=FALSE) +
   labs(title="b. Left Hippocampus Activation Spread", x="Aβ Status", y = "Full Width Half Maximum")
@@ -207,7 +212,7 @@ CLOCKD_combo_Pearson_Correlation <- cor(data$executive_attention, data$CLOCKD, u
 mdl_Abs_hippocampus_AI <- lm(Abs_Hippocampus_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_Abs_hippocampus_AI)
 
-mdl_Abs_DLPFC_AI <- lm(Abs_DLPFC_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+mdl_Abs_DLPFC_AI <- lm(Abs_DLPFC_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_Transform+APOE_STATUS_CODE, data = data)
 summary(mdl_Abs_DLPFC_AI)
 
 # Association with FWHM ####################################################################
@@ -255,6 +260,28 @@ summary(mdl_language_fwhm)
 
 mdl_executive_attention_fwhm <- lm(executive_attention ~ FaceName_PostScanAccuracy+ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_executive_attention_fwhm)
+
+# Executive_Attention with ALL #####################################################################
+#How to explain APOE?
+mdl_executive_attention_all <- lm(executive_attention ~ FaceName_PostScanAccuracy+ Abs_DLPFC_AI + Abs_Hippocampus_AI+ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+summary(mdl_executive_attention_all)
+#Education significance is only present because of high variance in '0' coded people (people with only 12 years of education)
+
+mdl_executive_attention_all_PiB_Transform <- lm(executive_attention ~ FaceName_PostScanAccuracy+ Abs_DLPFC_AI + Abs_Hippocampus_AI+ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_Transform+APOE_STATUS_CODE, data = data)
+summary(mdl_executive_attention_all_PiB_Transform)
+
+# Activation Values with ALL #########################################################################
+mdl_activation_right_hippocampus <- lm(Right_Hippocampus_Activation ~ FaceName_PostScanAccuracy+ Abs_DLPFC_AI + Abs_Hippocampus_AI+ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+summary(mdl_activation_right_hippocampus)
+
+mdl_activation_right_hippocampus_PiB_Transform <- lm(Right_Hippocampus_Activation ~ FaceName_PostScanAccuracy+ Abs_DLPFC_AI + Abs_Hippocampus_AI+ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_Transform+APOE_STATUS_CODE, data = data)
+summary(mdl_activation_right_hippocampus_PiB_Transform)
+
+mdl_activation_left_hippocampus <- lm(Left_Hippocampus_Activation ~ FaceName_PostScanAccuracy+ Abs_DLPFC_AI + Abs_Hippocampus_AI+ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+summary(mdl_activation_left_hippocampus)
+
+mdl_activation_left_hippocampus_PiB_Transform <- lm(Left_Hippocampus_Activation ~ FaceName_PostScanAccuracy+ Abs_DLPFC_AI + Abs_Hippocampus_AI+ Left_Hippocampus_FWHM + Right_Hippocampus_FWHM +Left_DLPFC_FWHM + Right_DLPFC_FWHM+ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_Transform+APOE_STATUS_CODE, data = data)
+summary(mdl_activation_left_hippocampus_PiB_Transform)
 
 ##########################################################################################################################
 # Cohort Demographic Cacluations
@@ -324,18 +351,16 @@ STR_INTERFERENCE_sd <- sd(data$STRINTERFERENCE, na.rm= TRUE)
 DIGSYMWR_mean <- mean(data$DIGSYMWR,na.rm= TRUE)
 DIGSYMWR_sd <- sd(data$DIGSYMWR,na.rm = TRUE)
 
-#Add Values for each cognitive domain to cohort table!!
-
 # Characterization of Results #####################
 # Raw AI
 mdl_raw_hippocampus_AI <- lm(Hippocampus_AI ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
 summary(mdl_hippocampus_AI)
 
 #Activation
-mdl_activation_right_hippocampus <- lm(Right_Hippocampus_Activation ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+mdl_activation_right_hippocampus <- lm(Right_Hippocampus_Activation ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_Transform+APOE_STATUS_CODE, data = data)
 summary(mdl_activation_right_hippocampus)
 
-mdl_activation_left_hippocampus <- lm(Left_Hippocampus_Activation ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data)
+mdl_activation_left_hippocampus <- lm(Left_Hippocampus_Activation ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_Transform+APOE_STATUS_CODE, data = data)
 summary(mdl_activation_left_hippocampus)
 plot(data$PiB_STATUS_CODE, data$Left_Hippocampus_Activation)
 
