@@ -177,14 +177,14 @@ DIGSYMWR_Combo_Pearson_Correlation <- cor(data$executive_attention, data$DIGSYMW
 SPANSB_Combo_Pearson_Correlation <- cor(data$executive_attention, data$SPANSB, use = "complete.obs")
 CLOCKD_combo_Pearson_Correlation <- cor(data$executive_attention, data$CLOCKD, use = "complete.obs")
 
-# Longitudinal Data Counts ##########################################################
+# Longitudinal Data  #####################################################################################################3
 n_occur <- data.frame(table(data$Vault_UID)) #getting the subject ID and the corresponding recurrence 
 table(data$Visit_Relative == 1, useNA = "no") # 901413 = no baseline data so this value gives 87 unique partipants (TRUE = number unique participants)
 table(n_occur$Freq) #Total number of subjects with each frequency, 88 total unique participants
 data_multiple_visit <- data[data$Vault_UID %in% n_occur$Var1[n_occur$Freq > 1],] #getting the data with the multiple fMRI scans
 length(unique(data_multiple_visit$Vault_UID)) #55 unique participants with longitudinal data > 1 visit
 
-#Index each partipant's scan info
+#Index each participant's scan info
 library(data.table)
 setDT(data_multiple_visit)[, Index := seq_len(.N), by = Vault_UID]
 
@@ -208,6 +208,8 @@ average_4th_visit_time <- mean(data_multiple_visit$Visit_Relative[fourth_visit_i
 # Cognitive Decline Over Time
 
 # AI Change Over Time
+
+#FWHM Change Over Time
 
 
 # Make Violin Plots ########################################################################
