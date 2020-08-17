@@ -16,8 +16,7 @@ FWHM <- abs(FWHM)
 # FWHM <- abs(FWHM)
 # Filter Data ##############################################################
 data <- data[is.na(data$FaceNames_Exclude),] #Issues with face name data and only 1 scan/subject - 87 observations
-# Comment out for longitudinal studies #############################################################################
-#data <- data[data$Visit_Relative == 1,] # Comment out for longitudinal studies
+data <- data[data$Visit_Relative == 1,] # Comment out for longitudinal studies
 ###############################################################################
 list <- match(activation$Scan_ID,data$Vault_Scan_ID)
 index <- which(list!=0,arr.ind = T)
@@ -55,7 +54,7 @@ data$Right_DLPFC_FWHM[list] <- FWHM[,6][index]
 # Recode Variables ##############################################################
 data$Race[data$Race == "NaN"] = NA
 data$Race_cat <- data$Race != 'White' #non-white = TRUE
-#Education_cat <- data$Education > 12  #higher education = True
+data$Education_cat <- data$Education > 12  #higher education = True
 data$Sex[data$Sex == "NaN"] = NA
 data$Sex_cat <- (data$Sex == 'Male') #TRUE = male
 data$PiBStatus_SUVR_GTM_FS_Global[data$PiBStatus_SUVR_GTM_FS_Global == "NaN"] = NA
@@ -176,41 +175,6 @@ SPANSF_Combo_Pearson_Correlation <- cor(data$executive_attention, data$SPANSF, u
 DIGSYMWR_Combo_Pearson_Correlation <- cor(data$executive_attention, data$DIGSYMWR, use = "complete.obs")
 SPANSB_Combo_Pearson_Correlation <- cor(data$executive_attention, data$SPANSB, use = "complete.obs")
 CLOCKD_combo_Pearson_Correlation <- cor(data$executive_attention, data$CLOCKD, use = "complete.obs")
-
-# Longitudinal Data  #####################################################################################################3
-n_occur <- data.frame(table(data$Vault_UID)) #getting the subject ID and the corresponding recurrence 
-table(data$Visit_Relative == 1, useNA = "no") # 901413 = no baseline data so this value gives 87 unique partipants (TRUE = number unique participants)
-table(n_occur$Freq) #Total number of subjects with each frequency, 88 total unique participants
-data_multiple_visit <- data[data$Vault_UID %in% n_occur$Var1[n_occur$Freq > 1],] #getting the data with the multiple fMRI scans
-length(unique(data_multiple_visit$Vault_UID)) #55 unique participants with longitudinal data > 1 visit
-
-#Index each participant's scan info
-library(data.table)
-setDT(data_multiple_visit)[, Index := seq_len(.N), by = Vault_UID]
-
-# Missing Cognitive Data
-
-
-# Average Time of Scans
-second_visit_index <- which(data_multiple_visit$Index == 2)
-third_visit_index <- which(data_multiple_visit$Index == 3)
-fourth_visit_index <- which(data_multiple_visit$Index == 4)
-
-average_2nd_visit = mean(data_multiple_visit$Visit_Relative[second_visit_index])
-average_3rd_visit <- mean(data_multiple_visit$Visit_Relative[third_visit_index])
-average_4th_visit <- mean(data_multiple_visit$Visit_Relative[fourth_visit_index])
-
-# Average time period between scans
-average_2nd_visit_time <- mean(data_multiple_visit$Visit_Relative[second_visit_index] - data_multiple_visit$Visit_Relative[second_visit_index - 1]) 
-average_3rd_visit_time <- mean(data_multiple_visit$Visit_Relative[third_visit_index] - data_multiple_visit$Visit_Relative[third_visit_index - 1]) 
-average_4th_visit_time <- mean(data_multiple_visit$Visit_Relative[fourth_visit_index] - data_multiple_visit$Visit_Relative[fourth_visit_index - 1]) 
-
-# Cognitive Decline Over Time
-
-# AI Change Over Time
-
-#FWHM Change Over Time
-
 
 # Make Violin Plots ########################################################################
 vplot_data <- data.frame("PiB" = data$PiBStatus_SUVR_GTM_FS_Global, "Left Hippocampus FWHM" = data$Left_Hippocampus_FWHM,
