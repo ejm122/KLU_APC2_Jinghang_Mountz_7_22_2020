@@ -16,8 +16,6 @@ FWHM <- abs(FWHM)
 # FWHM <- abs(FWHM)
 # Filter Data ##############################################################
 data <- data[is.na(data$FaceNames_Exclude),] #Issues with face name data and only 1 scan/subject - 87 observations
-# Comment out for longitudinal studies #############################################################################
-#data <- data[data$Visit_Relative == 1,] # Comment out for longitudinal studies
 ###############################################################################
 list <- match(activation$Scan_ID,data$Vault_Scan_ID)
 index <- which(list!=0,arr.ind = T)
@@ -71,6 +69,7 @@ data$WREC_TOT <- (data$WREC + data$WREC2 + data$WREC3)
 Pred_STRCW <- (data$STRCOL*data$STRWRD) / (data$STRCOL+data$STRWRD) #doi: 10.3389/fpsyg.2017.00557 - Stroop Interference Score
 data$STRINTERFERENCE <- data$STRCW - Pred_STRCW
 data$PiB_Transform <- -1 / log(data$PiB_SUVR_GTM_FS_Global)
+data$GDS_STATUS <- data$GDS_TOTAL > 9
 
 #Filter for only con_0003 > 0 in both ROIs:
 # data1 <- data[which(data$Left_Hippocampus_Activation > 0 & data$Right_Hippocampus_Activation > 0),]
@@ -206,6 +205,7 @@ average_fourth_visit_time <- mean(data_multiple_visit$Visit_Relative[fourth_visi
 second_visit_time_change <- data_multiple_visit$Visit_Relative[second_visit_index] - data_multiple_visit$Visit_Relative[second_visit_index - 1]
 third_visit_time_change <- data_multiple_visit$Visit_Relative[third_visit_index] - data_multiple_visit$Visit_Relative[third_visit_index - 1]
 fourth_visit_time_change <- data_multiple_visit$Visit_Relative[fourth_visit_index] - data_multiple_visit$Visit_Relative[fourth_visit_index - 1]
+first_to_third_visit_time_change <- data_multiple_visit$Visit_Relative[third_visit_index] - data_multiple_visit$Visit_Relative[third_visit_index - 2]
 
 average_second_visit_time_change <- mean(second_visit_time_change) 
 average_third_visit_time_change <- mean(third_visit_time_change) 
@@ -258,33 +258,34 @@ third_visit_executive_attention_change <- data_multiple_visit$executive_attentio
 fourth_visit_executive_attention_change <- data_multiple_visit$executive_attention[fourth_visit_index] - data_multiple_visit$executive_attention[fourth_visit_index - 1]
 
 second_memory_learning_change_over_time <- second_visit_memory_learning_change / second_visit_time_change
-data_multiple_visit$second_memory_learning_change_over_time <- NA
-data_multiple_visit$second_memory_learning_change_over_time[second_visit_index] <- second_memory_learning_change_over_time
-mdl_second_memory_learning_change <- lm(second_memory_learning_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
-summary(mdl_second_memory_learning_change) 
+data_multiple_visit$memory_learning_change_over_time <- NA
+data_multiple_visit$memory_learning_change_over_time[second_visit_index] <- second_memory_learning_change_over_time
 
 second_memory_retrieval_change_over_time <- second_visit_memory_retrieval_change / second_visit_time_change
-data_multiple_visit$second_memory_retrieval_change_over_time <- NA
-data_multiple_visit$second_memory_retrieval_change_over_time[second_visit_index] <- second_memory_retrieval_change_over_time
-mdl_second_memory_retrieval_change <- lm(second_memory_retrieval_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
-summary(mdl_second_memory_retrieval_change) 
+data_multiple_visit$memory_retrieval_change_over_time <- NA
+data_multiple_visit$memory_retrieval_change_over_time[second_visit_index] <- second_memory_retrieval_change_over_time
 
 second_language_change_over_time <- second_visit_language_change / second_visit_time_change
-data_multiple_visit$second_language_change_over_time <- NA
-data_multiple_visit$second_language_change_over_time[second_visit_index] <- second_language_change_over_time
-mdl_second_language_change <- lm(second_language_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
-summary(mdl_second_language_change) 
+data_multiple_visit$language_change_over_time <- NA
+data_multiple_visit$language_change_over_time[second_visit_index] <- second_language_change_over_time
 
 second_visuospatial_change_over_time <- second_visit_visuospatial_change / second_visit_time_change
-data_multiple_visit$second_visuospatial_change_over_time <- NA
-data_multiple_visit$second_visuospatial_change_over_time[second_visit_index] <- second_visuospatial_change_over_time
-mdl_second_visuospatial_change <- lm(second_visuospatial_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
-summary(mdl_second_visuospatial_change) 
+data_multiple_visit$visuospatial_change_over_time <- NA
+data_multiple_visit$visuospatial_change_over_time[second_visit_index] <- second_visuospatial_change_over_time
 
 second_executive_attention_change_over_time <- second_visit_executive_attention_change / second_visit_time_change
-data_multiple_visit$second_executive_attention_change_over_time <- NA
-data_multiple_visit$second_executive_attention_change_over_time[second_visit_index] <- second_executive_attention_change_over_time
-mdl_second_executive_attention_change <- lm(second_executive_attention_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
+data_multiple_visit$executive_attention_change_over_time <- NA
+data_multiple_visit$executive_attention_change_over_time[second_visit_index] <- second_executive_attention_change_over_time
+
+mdl_second_memory_learning_change <- lm(memory_learning_change_over_time ~ Age_CurrentVisit+GDS_STATUS+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
+summary(mdl_second_memory_learning_change) 
+mdl_second_memory_retrieval_change <- lm(memory_retrieval_change_over_time ~ Age_CurrentVisit+GDS_STATUS+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
+summary(mdl_second_memory_retrieval_change) 
+mdl_second_language_change <- lm(language_change_over_time ~ Age_CurrentVisit+GDS_STATUS+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
+summary(mdl_second_language_change)
+mdl_second_visuospatial_change <- lm(visuospatial_change_over_time ~ Age_CurrentVisit+GDS_STATUS+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
+summary(mdl_second_visuospatial_change)
+mdl_second_executive_attention_change <- lm(executive_attention_change_over_time ~ Age_CurrentVisit+GDS_STATUS+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
 summary(mdl_second_executive_attention_change) 
 
 # AI Change Over Visits #######################################################################
@@ -301,6 +302,19 @@ average_fourth_visit_hippocampus_AI <- mean(fourth_visit_Hippocampus_AI, na.rm =
 
 average_visit_Hippocampus_AI <- data.frame("Relative_Visit" = c(1,2,3,4), "Average_Hippocampus_AI" = c(average_first_visit_hippocampus_AI, average_second_visit_hippocampus_AI, average_third_visit_hippocampus_AI, average_fourth_visit_hippocampus_AI))
 plot(average_visit_Hippocampus_AI$Relative_Visit, average_visit_Hippocampus_AI$Average_Hippocampus_AI)
+plot(data_multiple_visit$Index, data_multiple_visit$Hippocampus_AI)
+plot(data_multiple_visit$Visit_Relative, data_multiple_visit$Abs_Hippocampus_AI)
+mdl_Relative_Visit_Hippocampus_AI <- lm(Hippocampus_AI ~ Visit_Relative, data = data_multiple_visit)
+summary(mdl_Relative_Visit_Hippocampus_AI)
+mdl_Relative_Visit_Abs_Hippocampus_AI <- lm(Abs_Hippocampus_AI ~ Visit_Relative, data = data_multiple_visit)
+summary(mdl_Relative_Visit_Abs_Hippocampus_AI)
+#Only for raw Hippocampus AI, greater relative visit --> greater AI
+mdl_Relative_Visit_DLPFC_AI <- lm(DLPFC_AI ~ Visit_Relative, data = data_multiple_visit)
+summary(mdl_Relative_Visit_DLPFC_AI)
+mdl_Relative_Visit_Abs_DLPFC_AI <- lm(Abs_DLPFC_AI ~ Visit_Relative, data = data_multiple_visit)
+summary(mdl_Relative_Visit_Abs_DLPFC_AI)
+#No significance between visit and DLPFC AI
+#Significance on individual level:
 
 average_first_visit_DLPFC_AI <- mean(data_multiple_visit$Abs_DLPFC_AI[first_visit_index], na.rm = TRUE)
 average_second_visit_DLPFC_AI <- mean(data_multiple_visit$Abs_DLPFC_AI[second_visit_index], na.rm =TRUE)
@@ -337,17 +351,15 @@ plot(average_visit_DLPFC_AI_change$Relative_Visit, average_visit_DLPFC_AI_change
 
 # AI Change over Time ########################################################################################
 second_Hippocampus_AI_change_over_time <- second_visit_Hippocampus_AI_change / second_visit_time_change
-data_multiple_visit$second_Hippocampus_AI_change_over_time <- NA
-data_multiple_visit$second_Hippocampus_AI_change_over_time[second_visit_index] <- second_Hippocampus_AI_change_over_time
+data_multiple_visit$Hippocampus_AI_change_over_time <- NA
+data_multiple_visit$Hippocampus_AI_change_over_time[second_visit_index] <- second_Hippocampus_AI_change_over_time
 average_second_Hippocampus_AI_change_over_time <- mean(second_Hippocampus_AI_change_over_time, na.rm = TRUE)
 
 third_Hippocampus_AI_change_over_time <- third_visit_Hippocampus_AI_change / third_visit_time_change
-data_multiple_visit$third_Hippocampus_AI_change_over_time <- NA
-data_multiple_visit$third_Hippocampus_AI_change_over_time[third_visit_index] <- third_Hippocampus_AI_change_over_time
+data_multiple_visit$Hippocampus_AI_change_over_time[third_visit_index] <- third_Hippocampus_AI_change_over_time
 average_third_Hippocampus_AI_change_over_time <- mean(third_Hippocampus_AI_change_over_time, na.rm = TRUE)
 
 first_to_third_visit_Hippocampus_AI_change <- data_multiple_visit$Hippocampus_AI[third_visit_index] - data_multiple_visit$Hippocampus_AI[third_visit_index - 2]
-first_to_third_visit_time_change <- data_multiple_visit$Visit_Relative[third_visit_index] - data_multiple_visit$Visit_Relative[third_visit_index - 2]
 first_to_third_Hippocampus_AI_change_over_time <-first_to_third_visit_Hippocampus_AI_change / first_to_third_visit_time_change
 data_multiple_visit$first_to_third_Hippocampus_AI_change_over_time <- NA
 data_multiple_visit$first_to_third_Hippocampus_AI_change_over_time[third_visit_index] <- first_to_third_visit_Hippocampus_AI_change
@@ -359,16 +371,35 @@ average_fourth_Hippocampus_AI_change_over_time <- mean(fourth_Hippocampus_AI_cha
 subject_AI_over_time <- data.frame("Relative_Visit" = c(1,2,3), "AI" = c(first_visit_Hippocampus_AI[third_visit_index-2], second_visit_Hippocampus_AI[third_visit_index-1], third_visit_Hippocampus_AI[third_visit_index]))
 plot(subject_AI_over_time$Relative_Visit, subject_AI_over_time$AI)
 
-mdl_second_change_AI <- lm(second_Hippocampus_AI_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
+mdl_second_change_AI <- lm(Hippocampus_AI_change_over_time ~ Age_CurrentVisit+GDS_STATUS+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
 summary(mdl_second_change_AI) 
 
-mdl_third_change_AI <- lm(third_Hippocampus_AI_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[third_visit_index]) 
+mdl_third_change_AI <- lm(Hippocampus_AI_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[third_visit_index]) 
 summary(mdl_third_change_AI)
+#No GDS Variance
 
 mdl_first_to_third_change_AI <- lm(first_to_third_Hippocampus_AI_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[third_visit_index]) 
 summary(mdl_first_to_third_change_AI)
 
-# Global Despression Change: 
+# Global Depression Change:
+second_visit_GDS_change <- data_multiple_visit$GDS_TOTAL[second_visit_index] - data_multiple_visit$GDS_TOTAL[second_visit_index - 1]
+third_visit_GDS_change <- data_multiple_visit$GDS_TOTAL[third_visit_index] - data_multiple_visit$GDS_TOTAL[third_visit_index - 1]
+fourth_visit_GDS_change <- data_multiple_visit$GDS_TOTAL[fourth_visit_index] - data_multiple_visit$GDS_TOTAL[fourth_visit_index - 1]
+
+second_GDS_change_over_time <- second_visit_GDS_change / second_visit_time_change
+data_multiple_visit$GDS_change_over_time <- NA
+data_multiple_visit$GDS_change_over_time[second_visit_index] <- second_GDS_change_over_time
+average_second_GDS_change_over_time <- mean(second_GDS_change_over_time, na.rm = TRUE)
+
+third_GDS_change_over_time <- third_visit_GDS_change / third_visit_time_change
+data_multiple_visit$GDS_change_over_time[third_visit_index] <- third_GDS_change_over_time
+average_third_GDS_change_over_time <- mean(third_GDS_change_over_time, na.rm = TRUE)
+
+mdl_second_change_GDS <- lm(GDS_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
+summary(mdl_second_change_GDS) 
+
+mdl_third_change_GDS <- lm(GDS_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[third_visit_index]) 
+summary(mdl_third_change_GDS)
 
 # Second derivatives
 data_multiple_visit$AI_second_derivative <- NA
@@ -379,5 +410,38 @@ mdl_second_derivative_AI <- lm(AI_second_derivative ~ Age_CurrentVisit+Sex_cat+R
 summary(mdl_second_derivative_AI)
 
 #FWHM Change Over Time
+second_visit_Left_Hippocampus_FWHM_change <- data_multiple_visit$Left_Hippocampus_FWHM[second_visit_index] - data_multiple_visit$Left_Hippocampus_FWHM[second_visit_index - 1]
+third_visit_Left_Hippocampus_FWHM_change <- data_multiple_visit$Left_Hippocampus_FWHM[third_visit_index] - data_multiple_visit$Left_Hippocampus_FWHM[third_visit_index - 1]
+fourth_visit_Left_Hippocampus_FWHM_change <- data_multiple_visit$Left_Hippocampus_FWHM[fourth_visit_index] - data_multiple_visit$Left_Hippocampus_FWHM[fourth_visit_index - 1]
+
+second_Left_Hippocampus_FWHM_change_over_time <- second_visit_Left_Hippocampus_FWHM_change / second_visit_time_change
+data_multiple_visit$Left_Hippocampus_FWHM_change_over_time <- NA
+data_multiple_visit$Left_Hippocampus_FWHM_change_over_time[second_visit_index] <- second_Left_Hippocampus_FWHM_change_over_time
+average_second_Left_Hippocampus_FWHM_change_over_time <- mean(second_Left_Hippocampus_FWHM_change_over_time, na.rm = TRUE)
+
+third_Left_Hippocampus_FWHM_change_over_time <- third_visit_Left_Hippocampus_FWHM_change / third_visit_time_change
+data_multiple_visit$Left_Hippocampus_FWHM_change_over_time[third_visit_index] <- third_Left_Hippocampus_FWHM_change_over_time
+average_third_Left_Hippocampus_FWHM_change_over_time <- mean(third_Left_Hippocampus_FWHM_change_over_time, na.rm = TRUE)
+
+mdl_second_change_Left_Hippocampus_FWHM <- lm(Left_Hippocampus_FWHM_change_over_time ~ Age_CurrentVisit+GDS_STATUS+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
+summary(mdl_second_change_Left_Hippocampus_FWHM) 
+#Greater PiB = increase in left hippocampus FWHM?
+
+mdl_third_change_Left_Hippocampus_FWHM <- lm(Left_Hippocampus_FWHM_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[third_visit_index]) 
+summary(mdl_third_change_Left_Hippocampus_FWHM)
+#Greater age, decrease FWHM
+#Greater education, increase FWHM
+#Greater glucose metabolism, increase FWHM
+#Greater PiB, decrese FWHM
+#Greater APOE, decrease FWHM
+
+first_to_third_visit_Left_Hippocampus_FWHM_change <- data_multiple_visit$Left_Hippocampus_FWHM[third_visit_index] - data_multiple_visit$Left_Hippocampus_FWHM[third_visit_index - 2]
+first_to_third_visit_Left_Hippocampus_FWHM_change_over_time <- first_to_third_visit_Left_Hippocampus_FWHM_change / first_to_third_visit_time_change
+data_multiple_visit$first_to_third_visit_Left_Hippocampus_FWHM_change_over_time <- NA
+data_multiple_visit$first_to_third_visit_Left_Hippocampus_FWHM_change_over_time[third_visit_index] <- first_to_third_visit_Left_Hippocampus_FWHM_change_over_time
+average_first_to_third_visit_Hippocampus_FWHM_change_over_time <- mean(first_to_third_visit_Left_Hippocampus_FWHM_change_over_time, na.rm = TRUE)
+
+mdl_first_to_third_visit_change_Left_Hippocampus_FWHM <- lm(first_to_third_visit_Left_Hippocampus_FWHM_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[third_visit_index]) 
+summary(mdl_first_to_third_visit_change_Left_Hippocampus_FWHM) 
 
 
