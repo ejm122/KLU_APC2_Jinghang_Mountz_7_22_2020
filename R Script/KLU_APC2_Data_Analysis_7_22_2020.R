@@ -177,17 +177,20 @@ SPANSB_Combo_Pearson_Correlation <- cor(data$executive_attention, data$SPANSB, u
 CLOCKD_combo_Pearson_Correlation <- cor(data$executive_attention, data$CLOCKD, use = "complete.obs")
 
 # Make Violin Plots ########################################################################
-vplot_data <- data.frame("PiB" = data$PiBStatus_SUVR_GTM_FS_Global, "Left Hippocampus FWHM" = data$Left_Hippocampus_FWHM,
+data$PiB_STATUS_LABEL <- NA
+data$PiB_STATUS_LABEL[which(data$PiB_STATUS_CODE == TRUE)] <- "PiB(+)"
+data$PiB_STATUS_LABEL[which(data$PiB_STATUS_CODE == FALSE)] <- "PiB(-)"
+vplot_data <- data.frame("PiB" = data$PiB_STATUS_LABEL, "Left Hippocampus FWHM" = data$Left_Hippocampus_FWHM,
                          "Left Hippocampus Activation" = data$Left_Hippocampus_Activation, "Right Hippocampus Activation" = data$Right_Hippocampus_Activation,
                          "Abs Hippocampus AI" = data$Abs_Hippocampus_AI, "Executive_Attention" = data$executive_attention, "Memory_Learning" = data$memory_learning,
                          "Memory_Retrieval" = data$memory_retrieval, "Visuospatial" = data$visuospatial, "Language" = data$language)
 #creating violin plot
 
 L_Hippocampus_FWHM_violin <- ggplot(data = vplot_data, aes(x=PiB, y=Left.Hippocampus.FWHM, fill = PiB)) + geom_violin(trim=FALSE) +
-  labs(title="b. Left Hippocampus Activation Spread", x="Aβ Status", y = "Full Width Half Maximum")
+  labs(title = "b.", x="PiB Status", y = "Full Width Half Maximum")
                                                           
 abs_hippocampus_AI_violin  <- ggplot(vplot_data, aes(x=PiB, y=Abs.Hippocampus.AI, fill = PiB)) + geom_violin(trim=FALSE)+
-  labs(title = "a. Absolute Hippocampus Activation AI", x = "Aβ Status", y = "Absolute Asymmetry Index")
+  labs(title = "a.", x = "PiB Status", y = "Absolute Asymmetry Index")
 
 Executive_Attention_violin  <- ggplot(vplot_data, aes(x=PiB, y=Executive_Attention, fill = PiB)) + geom_violin(trim=FALSE)+
   labs(title = "c. Executive/Attention Cognitive Function",x = "Aβ Status", y = "Cognitive Composite Score")
@@ -205,8 +208,8 @@ data_summary <- function(x) {
 }
 
 # Show Violin Plots ############################################################################
-L_Hippocampus_FWHM_violin + geom_dotplot(binaxis='y', stackdir='center', dotsize=0.9) + stat_summary(fun.data=data_summary, color = "black") + scale_x_discrete(limits=c("neg", "pos")) + theme(title=element_text(size=18), axis.text.x=element_text(size=18),axis.title=element_text(size=18),legend.position = 'none')
-abs_hippocampus_AI_violin + stat_summary(fun.data=data_summary, color = "black") + geom_dotplot(binaxis='y', stackdir='center', dotsize=1.6) + scale_x_discrete(limits=c("neg", "pos")) + theme(title=element_text(size=18),axis.text.x=element_text(size=18), axis.title=element_text(size=18),legend.position = 'none')
+L_Hippocampus_FWHM_violin + geom_dotplot(binaxis='y', stackdir='center', dotsize=0.9) + stat_summary(fun.data=data_summary, color = "black") + scale_x_discrete(limits=c("PiB(-)", "PiB(+)")) + theme(title=element_text(size=22), axis.text.x=element_text(size=22),axis.title=element_text(size=24), axis.text.y=element_text(size=18),legend.position = 'none')
+abs_hippocampus_AI_violin + stat_summary(fun.data=data_summary, color = "black") + geom_dotplot(binaxis='y', stackdir='center', dotsize=1.6) + scale_x_discrete(limits=c("PiB(-)", "PiB(+)")) + theme(title=element_text(size=22),axis.text.x=element_text(size=22), axis.title=element_text(size=24), axis.text.y=element_text(size=18), legend.position = 'none')
 Executive_Attention_violin + stat_summary(fun.data=data_summary, color = "black") + geom_dotplot(binaxis='y', stackdir='center', dotsize=1) + scale_x_discrete(limits=c("neg", "pos")) + theme(legend.title=element_text(size=30),legend.text=element_text(size=30),title=element_text(size=20), axis.text.x=element_text(size=30), axis.title=element_text(size=30))
 L_Hippocampus_activation_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2")
 R_Hippocampus_activation_violin + stat_summary(fun.data=data_summary) + scale_x_discrete(limits=c("FALSE", "TRUE")) + scale_color_brewer(palette="Dark2")

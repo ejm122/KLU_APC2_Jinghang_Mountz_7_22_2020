@@ -409,7 +409,7 @@ data_multiple_visit$AI_second_derivative[third_visit_index] <- AI_second_derivat
 mdl_second_derivative_AI <- lm(AI_second_derivative ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[third_visit_index]) 
 summary(mdl_second_derivative_AI)
 
-#FWHM Change Over Time
+#Left Hippocampus FWHM Change Over Time #############################################################
 second_visit_Left_Hippocampus_FWHM_change <- data_multiple_visit$Left_Hippocampus_FWHM[second_visit_index] - data_multiple_visit$Left_Hippocampus_FWHM[second_visit_index - 1]
 third_visit_Left_Hippocampus_FWHM_change <- data_multiple_visit$Left_Hippocampus_FWHM[third_visit_index] - data_multiple_visit$Left_Hippocampus_FWHM[third_visit_index - 1]
 fourth_visit_Left_Hippocampus_FWHM_change <- data_multiple_visit$Left_Hippocampus_FWHM[fourth_visit_index] - data_multiple_visit$Left_Hippocampus_FWHM[fourth_visit_index - 1]
@@ -444,4 +444,50 @@ average_first_to_third_visit_Hippocampus_FWHM_change_over_time <- mean(first_to_
 mdl_first_to_third_visit_change_Left_Hippocampus_FWHM <- lm(first_to_third_visit_Left_Hippocampus_FWHM_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[third_visit_index]) 
 summary(mdl_first_to_third_visit_change_Left_Hippocampus_FWHM) 
 
+# Hippocampus Activation Change Over Time ########################################################
+#Left Hippocampus
+second_visit_Left_Hippocampus_Activation_change <- data_multiple_visit$Left_Hippocampus_Activation[second_visit_index] - data_multiple_visit$Left_Hippocampus_Activation[second_visit_index - 1]
+third_visit_Left_Hippocampus_Activation_change <- data_multiple_visit$Left_Hippocampus_Activation[third_visit_index] - data_multiple_visit$Left_Hippocampus_Activation[third_visit_index - 1]
+fourth_visit_Left_Hippocampus_Activation_change <- data_multiple_visit$Left_Hippocampus_Activation[fourth_visit_index] - data_multiple_visit$Left_Hippocampus_Activation[fourth_visit_index - 1]
+
+second_Left_Hippocampus_Activation_change_over_time <- second_visit_Left_Hippocampus_Activation_change / second_visit_time_change
+data_multiple_visit$Left_Hippocampus_Activation_change_over_time <- NA
+data_multiple_visit$Left_Hippocampus_Activation_change_over_time[second_visit_index] <- second_Left_Hippocampus_Activation_change_over_time
+average_second_Left_Hippocampus_Activation_change_over_time <- mean(second_Left_Hippocampus_Activation_change_over_time, na.rm = TRUE)
+
+third_Left_Hippocampus_Activation_change_over_time <- third_visit_Left_Hippocampus_Activation_change / third_visit_time_change
+data_multiple_visit$Left_Hippocampus_Activation_change_over_time[third_visit_index] <- third_Left_Hippocampus_Activation_change_over_time
+average_third_Left_Hippocampus_Activation_change_over_time <- mean(third_Left_Hippocampus_Activation_change_over_time, na.rm = TRUE)
+
+mdl_second_change_Left_Hippocampus_Activation <- lm(Left_Hippocampus_Activation_change_over_time ~ Age_CurrentVisit+GDS_STATUS+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
+summary(mdl_second_change_Left_Hippocampus_Activation) 
+#Greater PiB = increase in left hippocampus FWHM?
+
+mdl_third_change_Left_Hippocampus_Activation <- lm(Left_Hippocampus_Activation_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[third_visit_index]) 
+summary(mdl_third_change_Left_Hippocampus_Activation)
+
+#Right Hippocampus
+# Hippocampus Activation Change Over Time ########################################################
+second_visit_Right_Hippocampus_Activation_change <- data_multiple_visit$Right_Hippocampus_Activation[second_visit_index] - data_multiple_visit$Right_Hippocampus_Activation[second_visit_index - 1]
+third_visit_Right_Hippocampus_Activation_change <- data_multiple_visit$Right_Hippocampus_Activation[third_visit_index] - data_multiple_visit$Right_Hippocampus_Activation[third_visit_index - 1]
+fourth_visit_Right_Hippocampus_Activation_change <- data_multiple_visit$Right_Hippocampus_Activation[fourth_visit_index] - data_multiple_visit$Right_Hippocampus_Activation[fourth_visit_index - 1]
+
+second_Right_Hippocampus_Activation_change_over_time <- second_visit_Right_Hippocampus_Activation_change / second_visit_time_change
+data_multiple_visit$Right_Hippocampus_Activation_change_over_time <- NA
+data_multiple_visit$Right_Hippocampus_Activation_change_over_time[second_visit_index] <- second_Right_Hippocampus_Activation_change_over_time
+average_second_Right_Hippocampus_Activation_change_over_time <- mean(second_Right_Hippocampus_Activation_change_over_time, na.rm = TRUE)
+
+third_Right_Hippocampus_Activation_change_over_time <- third_visit_Right_Hippocampus_Activation_change / third_visit_time_change
+data_multiple_visit$Right_Hippocampus_Activation_change_over_time[third_visit_index] <- third_Right_Hippocampus_Activation_change_over_time
+average_Right_Left_Hippocampus_Activation_change_over_time <- mean(third_Right_Hippocampus_Activation_change_over_time, na.rm = TRUE)
+
+mdl_second_change_Right_Hippocampus_Activation <- lm(Right_Hippocampus_Activation_change_over_time ~ Age_CurrentVisit+GDS_STATUS+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[second_visit_index]) 
+summary(mdl_second_change_Left_Hippocampus_Activation) 
+#Greater PiB = increase in left hippocampus FWHM?
+
+mdl_third_change_Right_Hippocampus_Activation <- lm(Right_Hippocampus_Activation_change_over_time ~ Age_CurrentVisit+Sex_cat+Race_cat+Education_cat+FDG_SUVR_GTM_FS_Global+PiB_STATUS_CODE+APOE_STATUS_CODE, data = data_multiple_visit[third_visit_index]) 
+summary(mdl_third_change_Left_Hippocampus_Activation)
+#Greater age, decrease FWHM
+
+#PiB Change Over Time ##############################################################
 
