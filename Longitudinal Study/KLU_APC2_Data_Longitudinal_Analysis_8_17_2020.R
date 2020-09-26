@@ -75,44 +75,6 @@ data$GDS_STATUS <- data$GDS_TOTAL > 9
 # data1 <- data[which(data$Left_Hippocampus_Activation > 0 & data$Right_Hippocampus_Activation > 0),]
 # data2 <- data[which(data$Left_DLPFC_Activation > 0 & data$Right_DLPFC_Activation > 0),]
 
-#identifying PiB(+) subjects
-x_l_h <- data$Left_Hippocampus_Activation[data$PiB_STATUS_CODE == TRUE]
-y_l_h <- data$Left_Hippocampus_FWHM[data$PiB_STATUS_CODE == TRUE]
-x_r_h <- data$Right_Hippocampus_Activation[data$PiB_STATUS_CODE == TRUE]
-y_r_h <- data$Right_Hippocampus_FWHM[data$PiB_STATUS_CODE == TRUE]
-
-x_l_d <-data$Left_DLPFC_Activation[data$PiB_STATUS_CODE == TRUE]
-y_l_d <- data$Left_DLPFC_FWHM[data$PiB_STATUS_CODE == TRUE]
-x_r_d <-data$Right_DLPFC_Activation[data$PiB_STATUS_CODE == TRUE]
-y_r_d <- data$Right_DLPFC_FWHM[data$PiB_STATUS_CODE == TRUE]
-#visulize data#################################################################
-plot(data$Left_Hippocampus_Activation, data$Left_Hippocampus_FWHM,col="red", pch = 1, xlab="Mean Activation", ylab="FWHM")
-points(data$Right_Hippocampus_Activation, data$Right_Hippocampus_FWHM, pch = 2, col="black")
-points(x_l_h,y_l_h,pch = 19, cex = 1)
-points(x_r_h,y_r_h,pch = 17, cex = 1)
-legend(x=-2.5,y=27,c("Left Hippocampus", "Right Hippocampus", "PiB(+) Subjects","PiB(+) Subjects"),cex=.8,col=c("red","black","black","black"),pch=c(1,2,19,17))
-
-plot(data$Left_DLPFC_Activation, data$Left_DLPFC_FWHM,col="blue", pch = 1, xlab="Mean Activation", ylab="FWHM")
-points(data$Right_DLPFC_Activation, data$Right_DLPFC_FWHM, col = "brown", pch =2)
-points(x_l_d,y_l_d,pch = 19, cex = 1)
-points(x_r_d,y_r_d,pch = 17, cex = 1)
-legend(x=-4,y=35,c("Left DLPFC", "Right DLPFC","PiB(+) Subjects","PiB(+) Subjects"),cex=.8,col=c("blue","brown","black","black"),pch=c(1,2,19,17))
-
-plot(data$Left_Hippocampus_Activation,data$Right_Hippocampus_Activation, col="black", pch =1, xlab = "Left Hippocampus Mean Activation", ylab = "Right Hippocampus Mean Activation",cex = 1,xlim=c(-3,4), ylim=c(-3,4))
-points(x_l_h, x_r_h,pch = 19, cex = 1, col="red") #hippocampus left and right activation
-data_PiB_Positive <- data[which(data$PiBStatus_SUVR_GTM_FS_Global == "pos"),]
-data_PiB_Negative <- data[which(data$PiBStatus_SUVR_GTM_FS_Global == "neg"),]
-mdl_right_left_activation_positive <- lm(lm(Right_Hippocampus_Activation ~ Left_Hippocampus_Activation, data = data_PiB_Positive))
-summary(mdl_right_left_activation_positive)
-mdl_right_left_activation_negative <- lm(lm(Right_Hippocampus_Activation ~ Left_Hippocampus_Activation, data = data_PiB_Negative))
-summary(mdl_right_left_activation_negative)
-abline(mdl_right_left_activation_positive, col = "red")
-abline(mdl_right_left_activation_negative)
-legend(-3,4, legend = c("PiB Negative", "PiB Positive"), col = c("black","red"), lty = 1, cex = 0.8)
-
-
-plot(data$Left_DLPFC_Activation,data$Right_DLPFC_Activation, col="black", pch =1, xlab = "Left DLPFC Mean Activation", ylab = "Right DLPFC Mean Activation",cex = 1,xlim=c(-3,4), ylim=c(-3,4))
-points(x_l_d,x_r_d,pch = 19, cex = 1, col="red") #dlpfc left and right activation
 # Cognitive Domain - Z Transform ####################################################################
 #Negative z value means that lower value = higher performance
 # doi:10.1016/j.jalz.2017.12.003 - method of composite calculation
@@ -146,36 +108,6 @@ data$visuospatial <- (BLOCKDES_Z + REYCO_Z) / 2
 data$language <- (FLUEN_Z + LETTER_FLUENCY_Z + BNT60TOT_Z) / 3
 data$executive_attention <- (TRAILAS_Z_INV + TRAILBS_Z_INV + CLOCKD_Z + DIGSYMWR_Z + STRINTERFERENCE_Z + SPANSF_Z + SPANSB_Z) / 7
 
-#Intraclass Correlation ################################################################
-# Pearson (Linear Correlation between composite and raw scores)
-library("irr")
-#Memory_Learning
-REYIM_Pearson_Correlation <- cor(data$memory_learning, data$REYIM, use = "complete.obs")
-LMIAIMM_Pearson_Correlation <- cor(data$memory_learning, data$LMIAIMM, use = "complete.obs")
-WREC_TOT_Pearson_Correlation <- cor(data$memory_learning, data$WREC_TOT, use = "complete.obs")
-
-#Memory_Retrieval
-LMIIADEL_Pearson_Correlation <- cor(data$memory_learning, data$LMIIADEL, use = "complete.obs")
-REYDE_Pearson_Correlation <- cor(data$memory_learning, data$REYDE, use = "complete.obs")
-WRECDE_Pearson_Correlation <- cor(data$memory_learning, data$WRECDE, use = "complete.obs")
-
-# Visuospatial
-BLOCKDES_Pearson_Correlation <- cor(data$visuospatial, data$BLOCKDES, use = "complete.obs")
-REYCO_Pearson_Correlation <- cor(data$visuospatial, data$REYCO, use = "complete.obs")
-
-#Langugae
-BNT60TOT_Pearson_Correlation <- cor(data$language, data$BNT60TOT, use = "complete.obs")
-FLUEN_Pearson_Correlation <- cor(data$language, data$FLUEN, use = "complete.obs")
-LETTER_FLUENCY_Pearson_Correlation <- cor(data$language, data$LETTER_FLUENCY, use = "complete.obs")
-
-#Executive_Attention
-TRAILBS_Combo_Pearson_Correlation <- cor(data$executive_attention, -1*data$TRAILBS, use = "complete.obs")
-TRAILAS_Combo_Pearson_Correlation <- cor(data$executive_attention, -1*data$TRAILAS, use = "complete.obs")
-SPANSF_Combo_Pearson_Correlation <- cor(data$executive_attention, data$SPANSF, use = "complete.obs")
-DIGSYMWR_Combo_Pearson_Correlation <- cor(data$executive_attention, data$DIGSYMWR, use = "complete.obs")
-SPANSB_Combo_Pearson_Correlation <- cor(data$executive_attention, data$SPANSB, use = "complete.obs")
-CLOCKD_combo_Pearson_Correlation <- cor(data$executive_attention, data$CLOCKD, use = "complete.obs")
-
 # Longitudinal Data  #####################################################################################################3
 n_occur <- data.frame(table(data$Vault_UID)) #getting the subject ID and the corresponding recurrence 
 table(data$Visit_Relative == 1, useNA = "no") # 901413 = no baseline data so this value gives 87 unique partipants (TRUE = number unique participants)
@@ -190,6 +122,7 @@ setDT(data_multiple_visit)[, Index := seq_len(.N), by = Vault_UID]
 #PiB Status Tracking: #######################################################################
 table(data_multiple_visit$PiB_STATUS_CODE[data_multiple_visit$Index == 1], useNA = "no")
 table(data_multiple_visit$PiB_STATUS_CODE[data_multiple_visit$Index == 2], useNA = "no") #PiB(+) count increases
+table(data_multiple_visit$PiB_STATUS_CODE[data_multiple_visit$Index == 3], useNA = "no") #PiB(+) count increases
 
 # Average Time of Scans
 first_visit_index <- which(data_multiple_visit$Index == 1)
@@ -211,7 +144,7 @@ average_second_visit_time_change <- mean(second_visit_time_change)
 average_third_visit_time_change <- mean(third_visit_time_change) 
 average_fourth_visit_time_change <- mean(fourth_visit_time_change) 
 
-# Cognitive Decline Over Time 
+# Cognitive Decline Over Time #################################################################################3
 first_visit_memory_learning <- data_multiple_visit$memory_learning[first_visit_index]
 second_visit_memory_learning <- data_multiple_visit$memory_learning[second_visit_index]
 third_visit_memory_learning <- data_multiple_visit$memory_learning[third_visit_index]
