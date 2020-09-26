@@ -57,3 +57,5 @@ boxplot(FaceNames_Pos_Novel_Control_Thal_VPL_Asymmetry_LR ~ PiB_Median_Split, da
 boxplot(FaceNames_Pos_Novel_Control_Thal_VPL_AbsAsymmetry_LR ~ PiB_Median_Split, data = data)
 
 #Look into these things: FDR correction, and (p.adjust(stats) == adjusts for multiple comparisons)
+#Should variances be assumed to be equal? Test varriance
+
