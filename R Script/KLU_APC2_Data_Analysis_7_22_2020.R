@@ -3,7 +3,7 @@ dev.off()
 pacman::p_load(pacman, rio)
 library(ggplot2)
 # IMPORTING Data ###########################################################
-data <- import("~/Desktop/GPN/KLU_APC2_Master_2020_07_24_AS.xlsx")
+data <- import("~/Desktop/GPN/KLU_APC2_Master_2020_09_18.xlsx")
 activation <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/activ_values.txt")
 AI <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/AI.txt")
 FWHM <- import("~/Desktop/GitHub/KLU_APC2_Jinghang_Mountz_7_22_2020/Appending_to_Master/FWHM.txt")
@@ -291,6 +291,11 @@ summary(mdl_activation_left_hippocampus_PiB_Transform)
 
 ##########################################################################################################################
 # Cohort Demographic Cacluations
+#Toggle:
+complete_data = data[complete.cases(data$PiB_STATUS_CODE)]
+data_pos = data[complete_data$PiB_STATUS_CODE == TRUE,] 
+data_neg = data[complete_data$PiB_STATUS_CODE == FALSE,]
+
 age_mean <- mean(data$Age_CurrentVisit, na.rm = TRUE)
 age_sd <- sd(data$Age_CurrentVisit, na.rm = TRUE)
 
